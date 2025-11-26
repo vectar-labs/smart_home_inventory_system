@@ -12,7 +12,8 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     
-    from . import models 
+    from .routes import main
+    app.register_blueprint(main)
     from . import routes
 
     return app
