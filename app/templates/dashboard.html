@@ -129,21 +129,21 @@
   </div>
   <!-- recent activities -->
   <div class="grid grid-cols-12 gap-6 mt-10">
-    <div class="col-span-6 border-2 border-gray-100 px-8 py-4 rounded-md">
+    <div class="col-span-6 border-2 border-gray-100 px-6 py-4 rounded-md">
       <div class="flex justify-between items-center">
         <h3 class="text-sm text-gray-700 font-medium">Expiring Soon</h3>
         <div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
+            width="19"
+            height="19"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-            class="lucide lucide-calendar-icon lucide-calendar text-amber-700"
+            class="lucide lucide-calendar-icon lucide-calendar"
           >
             <path d="M8 2v4" />
             <path d="M16 2v4" />
@@ -152,31 +152,100 @@
           </svg>
         </div>
       </div>
+      <div class="">
+        <div class="mt-4 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-800">Eggs</p>
+              <p class="text-xs text-gray-500">Expires in 3 days</p>
+            </div>
+            <div>
+              <span class="text-sm font-medium text-red-500">12 Pieces</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-800">Milk</p>
+              <p class="text-xs text-gray-500">Expires in 2 days</p>
+            </div>
+            <div>
+              <span class="text-sm font-semibold text-red-500">1 Liter</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-800">Yogurt</p>
+              <p class="text-xs text-gray-500">Expires in 3 days</p>
+            </div>
+            <div>
+              <span class="text-sm font-semibold text-red-500">500 g</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="col-span-6 border-2 border-gray-100 px-8 py-4 rounded-md">
+    <div class="col-span-6 border-2 border-gray-100 px-6 py-4 rounded-md">
       <div class="flex justify-between items-center">
         <h3 class="text-sm text-gray-700 font-medium">Recent Activity</h3>
         <div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
+            width="24"
+            height="24"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-            class="lucide lucide-calendar-icon lucide-calendar text-amber-700"
+            class="lucide lucide-shopping-cart-icon lucide-shopping-cart text-green-400"
           >
-            <path d="M8 2v4" />
-            <path d="M16 2v4" />
-            <rect width="18" height="18" x="3" y="4" rx="2" />
-            <path d="M3 10h18" />
+            <circle cx="8" cy="21" r="1" />
+            <circle cx="19" cy="21" r="1" />
+            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
           </svg>
         </div>
       </div>
+      <div class="">
+        <div class="mt-4 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-800">Added Bread to Inventory</p>
+              <p class="text-xs text-gray-500">2 hours ago</p>
+            </div>
+            <div>
+              <span class="text-sm font-medium text-gray-600">1 Loaf</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-800">Removed Apples from Inventory</p>
+              <p class="text-xs text-gray-500">5 hours ago</p>
+            </div>
+            <div>
+              <span class="text-sm font-semibold text-gray-600">3 kg</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-800">Updated Quantity of Eggs</p>
+              <p class="text-xs text-gray-500">1 day ago</p>
+            </div>
+            <div>
+              <span class="text-sm font-semibold text-gray-600">12 Pieces</span>
+            </div>
+          </div>
+          <div class="border-1 border-gray-100 rounded-md flex items-center justify-center px-4 py-2 mt-5 cursor-pointer hover:bg-gray-50">
+            <p class="text-xs">View Full Inventory</p>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+  <!-- Tips -->
+  <div class="px-6 py-4 rounded-md bg-green-100 mt-12">
+    <h3 class="text-sm text-gray-700 font-medium mb-2">Quick Tip</h3>
+    <p class="text-sm font-regular text-gray-600">You have 2 items expiring within 3 days. Consider using them or add them to your meal plan today.</p>
   </div>
 </div>
 {% endblock %}
