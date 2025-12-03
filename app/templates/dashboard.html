@@ -7,7 +7,10 @@
       <p class="text-sm text-slate-600 mt-2">Welcome to your dashboard! Here you can manage your home inventory.</p>
       <!-- Add more dashboard content as needed -->
     </div>
-    <button class="flex items-center gap-2 text-sm bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition-colors cursor-pointer">
+    <a
+      href="{{url_for('main.add_item')}}"
+      class="flex items-center gap-2 text-sm bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition-colors cursor-pointer"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="18"
@@ -23,7 +26,7 @@
         <path d="M5 12h14" />
         <path d="M12 5v14" /></svg
       >Add Item
-    </button>
+    </a>
   </div>
   <!-- Statistics section -->
   <div>

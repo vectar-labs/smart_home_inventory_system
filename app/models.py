@@ -16,15 +16,19 @@ class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
 
+class Units(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(20), unique=True, nullable=False)
+
 class GroceryItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)
     quantity = db.Column(db.Float, nullable=False)
-    unit = db.Column(db.String(20), nullable=False)
     expiry_date = db.Column(db.Date, nullable=True)
     purchase_date = db.Column(db.Date, nullable=True)
     location_id = db.Column(db.Integer, db.ForeignKey('location.id'), nullable=True)
+    unit_id = db.Column(db.Integer, db.ForeignKey('units.id'), nullable=True)
     barcode = db.Column(db.String(64), nullable=True)
     photo_url = db.Column(db.String(200), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)

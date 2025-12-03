@@ -16,3 +16,7 @@ def signup():
 @main.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
+
+@main.route('/add_item')
+def add_item():
+    return render_template('add_item.html')
