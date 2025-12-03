@@ -20,3 +20,7 @@ def dashboard():
 @main.route('/add_item')
 def add_item():
     return render_template('add_item.html')
+
+@main.route('/inventory')
+def inventory():
+    return render_template('inventory.html')

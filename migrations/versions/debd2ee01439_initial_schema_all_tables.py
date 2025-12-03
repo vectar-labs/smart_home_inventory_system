@@ -1,8 +1,8 @@
-"""Initial migration
+"""Initial schema - all tables
 
-Revision ID: 89f4ba95e2c5
+Revision ID: debd2ee01439
 Revises: 
-Create Date: 2025-11-26 19:18:58.106805
+Create Date: 2025-12-03 09:28:14.566734
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '89f4ba95e2c5'
+revision = 'debd2ee01439'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,6 +30,12 @@ def upgrade():
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
+    op.create_table('units',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(length=20), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name')
+    )
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=120), nullable=False),
@@ -44,15 +50,16 @@ def upgrade():
     sa.Column('name', sa.String(length=120), nullable=False),
     sa.Column('category_id', sa.Integer(), nullable=True),
     sa.Column('quantity', sa.Float(), nullable=False),
-    sa.Column('unit', sa.String(length=20), nullable=False),
     sa.Column('expiry_date', sa.Date(), nullable=True),
     sa.Column('purchase_date', sa.Date(), nullable=True),
     sa.Column('location_id', sa.Integer(), nullable=True),
+    sa.Column('unit_id', sa.Integer(), nullable=True),
     sa.Column('barcode', sa.String(length=64), nullable=True),
     sa.Column('photo_url', sa.String(length=200), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['category_id'], ['category.id'], ),
     sa.ForeignKeyConstraint(['location_id'], ['location.id'], ),
+    sa.ForeignKeyConstraint(['unit_id'], ['units.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -74,6 +81,7 @@ def downgrade():
     op.drop_table('consumption_log')
     op.drop_table('grocery_item')
     op.drop_table('user')
+    op.drop_table('units')
     op.drop_table('location')
     op.drop_table('category')
     # ### end Alembic commands ###

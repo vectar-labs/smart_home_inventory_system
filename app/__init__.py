@@ -6,9 +6,13 @@ from config import Config
 db = SQLAlchemy()
 migrate = Migrate()
 
-def create_app():
+def create_app(class_config=Config):
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(class_config)
+    
+    with app.app_context():
+        from .models import User, Category, Location, Units, GroceryItem, ConsumptionLog
+    
     db.init_app(app)
     migrate.init_app(app, db)
     

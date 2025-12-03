@@ -1,0 +1,50 @@
+{% extends 'base.html' %} {% block content %}
+<div class="w-full">
+  <!-- Top header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-xl font-semibold text-gray-700">Inventory</h2>
+      <p class="text-sm text-slate-600 mt-2">Manage your inventory items here.</p>
+    </div>
+    <a
+      href="{{url_for('main.add_item')}}"
+      class="flex items-center gap-2 text-sm bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors cursor-pointer"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-plus-icon lucide-plus"
+      >
+        <path d="M5 12h14" />
+        <path d="M12 5v14" /></svg
+      >Add Item
+    </a>
+  </div>
+  <!-- Filters -->
+  <div class="mt-8 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <input
+        type="text"
+        placeholder="Search items..."
+        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+      />
+      <select class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm">
+        <option value="">All Categories</option>
+        <option value="fruits">Fruits</option>
+        <option value="vegetables">Vegetables</option>
+        <option value="dairy">Dairy</option>
+      </select>
+    </div>
+    <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors text-sm">Apply Filters</button>
+  </div>
+  <!-- Inventory Table -->
+  <div class="mt-6 overflow-x-auto"></div>
+</div>
+{% endblock content %}
