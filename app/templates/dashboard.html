@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% block content %}
 <div class="w-full">
   <!-- Top header -->
-  <div class="flex items-center justify-between">
+  <div class="flex items-center justify-between p-4 bg-white rounded-md border border-gray-100">
     <div>
       <h2 class="text-xl font-semibold text-gray-700">Dashboard</h2>
       <p class="text-sm text-slate-600 mt-2">Welcome to your dashboard! Here you can manage your home inventory.</p>
@@ -30,7 +30,7 @@
   </div>
   <!-- Statistics section -->
   <div>
-    <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div class="mt-5 grid grid-cols-1 md:grid-cols-4 gap-6 p-4 bg-white rounded-md border border-gray-100">
       <div class="px-6 py-3 flex items-center justify-between bg-blue-50 rounded-md">
         <div>
           <h3 class="text-md font-medium text-indigo-500">Total Items</h3>
@@ -131,7 +131,7 @@
     </div>
   </div>
   <!-- recent activities -->
-  <div class="grid grid-cols-12 gap-6 mt-10">
+  <div class="grid grid-cols-12 gap-6 mt-5 p-4 bg-white rounded-md border border-gray-100">
     <div class="col-span-6 border-2 border-gray-100 px-6 py-4 rounded-md">
       <div class="flex justify-between items-center">
         <h3 class="text-sm text-gray-700 font-medium">Expiring Soon</h3>
@@ -246,7 +246,7 @@
     </div>
   </div>
   <!-- Tips -->
-  <div class="px-6 py-4 rounded-md bg-green-100 mt-12">
+  <div class="px-6 py-4 rounded-md bg-green-100 mt-6">
     <h3 class="text-sm text-gray-700 font-medium mb-2">Quick Tip</h3>
     <p class="text-sm font-regular text-gray-600">You have 2 items expiring within 3 days. Consider using them or add them to your meal plan today.</p>
   </div>
