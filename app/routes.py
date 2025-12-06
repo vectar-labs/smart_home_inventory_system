@@ -17,10 +17,33 @@ def signup():
 def dashboard():
     return render_template('dashboard.html')
 
-@main.route('/add_item')
-def add_item():
-    return render_template('add_item.html')
+# inventory Routes
 
 @main.route('/inventory')
 def inventory():
     return render_template('inventory.html')
+
+@main.route('/add_item')
+def add_item():
+    return render_template('add_item.html')
+
+@main.route('/edit_item')
+def edit_item():
+    return render_template('edit_item.html')
+
+@main.route('/delete_item')
+def delete_item():
+    return "Item Deleted"
+
+# shopping list Routes
+
+@main.route('/shopping_list')
+def shopping_list():
+    return render_template('shopping_list.html')
+
+
+# consumption Routes
+
+@main.route('/consumption')
+def consumption():
+    return render_template('consumption_log.html')

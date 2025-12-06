@@ -1,0 +1,425 @@
+{% extends 'base.html' %} {% block content %}
+<div class="w-full">
+  <!-- Top header -->
+  <div class="flex items-center justify-between p-4">
+    <div>
+      <h2 class="text-xl font-semibold text-gray-700">Consumption Tracking</h2>
+      <p class="text-sm text-slate-600 mt-2">Monitor and log grocery item usage</p>
+    </div>
+    <div class="flex items-center space-x-4">
+      <a class="flex items-center gap-2 text-sm text-gray-500 border border-gray-300 px-4 py-2 rounded-md cursor-pointer">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-arrow-down-to-line-icon lucide-arrow-down-to-line text-gray-500"
+        >
+          <path d="M12 17V3" />
+          <path d="m6 11 6 6 6-6" />
+          <path d="M19 21H5" />
+        </svg>
+        Export</a
+      ><a
+        href="{{url_for('main.add_item')}}"
+        class="flex items-center gap-2 text-sm bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors cursor-pointer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-plus-icon lucide-plus"
+        >
+          <path d="M5 12h14" />
+          <path d="M12 5v14" /></svg
+        >Log Consumption
+      </a>
+    </div>
+  </div>
+  <!-- statistics -->
+  <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- card -->
+    <div class="col-span-1 bg-white border border-gray-200 rounded-md">
+      <div class="p-6 rounded-md flex items-center justify-between">
+        <div>
+          <h3 class="text-md font-medium text-gray-600">Total Consumed Items</h3>
+          <p class="text-lg font-semibold text-gray-700/50 mt-2">75</p>
+        </div>
+        <div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-chart-no-axes-column-icon lucide-chart-no-axes-column text-blue-400"
+          >
+            <path d="M5 21v-6" />
+            <path d="M12 21V3" />
+            <path d="M19 21V9" />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <!-- card -->
+    <div class="col-span-1 bg-white border border-gray-200 rounded-md">
+      <div class="p-6 rounded-md flex items-center justify-between">
+        <div>
+          <h3 class="text-md font-medium text-gray-600">This Week</h3>
+          <p class="text-lg font-semibold text-gray-700/50 mt-2">5</p>
+        </div>
+        <div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-trending-down-icon lucide-trending-down text-green-400"
+          >
+            <path d="M16 17h6v-6" />
+            <path d="m22 17-8.5-8.5-5 5L2 7" />
+          </svg>
+        </div>
+      </div>
+    </div>
+    <!-- card -->
+    <div class="col-span-1 bg-white border border-gray-200 rounded-md">
+      <div class="p-6 rounded-md flex items-center justify-between">
+        <div>
+          <h3 class="text-md font-medium text-gray-600">Active Users</h3>
+          <p class="text-lg font-semibold text-gray-700/50 mt-2">2</p>
+        </div>
+        <div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-users-icon lucide-users text-indigo-400"
+          >
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <path d="M16 3.128a4 4 0 0 1 0 7.744" />
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+            <circle cx="9" cy="7" r="4" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Filters -->
+  <div class="w-full border border-gray-100 mt-5 p-4 bg-white rounded-md">
+    <h2 class="flex items-center gap-3">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-funnel-icon lucide-funnel"
+      >
+        <path
+          d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"
+        /></svg
+      ><span class="font-medium text-gray-600/80">Filters</span>
+    </h2>
+
+    <!-- Filters panel -->
+    <div class="w-full mt-4 gap-4">
+      <form class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <input
+            type="text"
+            placeholder="Search item or user..."
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+          />
+        </div>
+
+        <div>
+          <select
+            name="category"
+            id=""
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-xs"
+          >
+            <option value="other">All Categories</option>
+
+            <option value="other">Diary</option>
+
+            <option value="other">Meat</option>
+
+            <option value="other">Vegetables</option>
+
+            <option value="other">Fruits</option>
+          </select>
+        </div>
+
+        <div>
+          <select
+            name="category"
+            id=""
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-xs"
+          >
+            <option value="other">All <time></time></option>
+
+            <option value="other">Today</option>
+
+            <option value="other">Last 7 days</option>
+
+            <option value="other">Last 30 days</option>
+          </select>
+        </div>
+        <div>
+          <input
+            type="submit"
+            placeholder="Filter"
+            class="w-full px-4 py-2 rounded-lg focus:outline-none bg-green-400 text-sm font-medium text-white cursor-pointer"
+          />
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Inventory Table -->
+  <div class="overflow-x-auto border border-gray-100 mt-5 p-4 bg-white rounded-md">
+    <div class="flex flex-col">
+      <div class="-m-1.5 overflow-x-auto">
+        <div class="p-1.5 min-w-full inline-block align-middle">
+          <div class="overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
+              <thead>
+                <tr>
+                  <th scope="col" class="px-6 py-2 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">DATE</th>
+                  <th scope="col" class="px-6 py-2 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">ITEM</th>
+                  <th scope="col" class="px-6 py-2 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">CATEGORY</th>
+                  <th scope="col" class="px-6 py-2 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">QUANTITY</th>
+                  <th scope="col" class="px-6 py-2 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">USER</th>
+                  <th scope="col" class="px-6 py-2 text-end text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
+                <tr class="hover:bg-gray-100 dark:hover:bg-neutral-700">
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200 flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-calendar-icon lucide-calendar text-gray-400"
+                    >
+                      <path d="M8 2v4" />
+                      <path d="M16 2v4" />
+                      <rect width="18" height="18" x="3" y="4" rx="2" />
+                      <path d="M3 10h18" /></svg
+                    >12/4/2025
+                  </td>
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Bread</td>
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Bakery</td>
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">0.5 loaf</td>
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Admin User</td>
+                  <td class="px-6 py-3 text-sm font-medium flex items-center justify-end space-x-5">
+                    <a href="{{url_for('main.edit_item')}}" class="text-sm text-green-600 font-medium flex items-center rounded-md">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-pencil-icon lucide-pencil"
+                      >
+                        <path
+                          d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
+                        />
+                        <path d="m15 5 4 4" /></svg
+                    ></a>
+                    <a href="#" class="text-sm text-red-600 font-medium flex items-center gap-2 rounded-md">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-trash-icon lucide-trash"
+                      >
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                        <path d="M3 6h18" />
+                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                      </svg>
+                    </a>
+                  </td>
+                </tr>
+                <tr class="hover:bg-gray-100 dark:hover:bg-neutral-700">
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200 flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-calendar-icon lucide-calendar text-gray-400"
+                    >
+                      <path d="M8 2v4" />
+                      <path d="M16 2v4" />
+                      <rect width="18" height="18" x="3" y="4" rx="2" />
+                      <path d="M3 10h18" /></svg
+                    >12/4/2025
+                  </td>
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Bread</td>
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Bakery</td>
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">0.5 loaf</td>
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Admin User</td>
+                  <td class="px-6 py-3 text-sm font-medium flex items-center justify-end space-x-5">
+                    <a href="{{url_for('main.edit_item')}}" class="text-sm text-green-600 font-medium flex items-center rounded-md">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-pencil-icon lucide-pencil"
+                      >
+                        <path
+                          d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
+                        />
+                        <path d="m15 5 4 4" /></svg
+                    ></a>
+                    <a href="#" class="text-sm text-red-600 font-medium flex items-center gap-2 rounded-md">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-trash-icon lucide-trash"
+                      >
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                        <path d="M3 6h18" />
+                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                      </svg>
+                    </a>
+                  </td>
+                </tr>
+                <tr class="hover:bg-gray-100 dark:hover:bg-neutral-700">
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200 flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-calendar-icon lucide-calendar text-gray-400"
+                    >
+                      <path d="M8 2v4" />
+                      <path d="M16 2v4" />
+                      <rect width="18" height="18" x="3" y="4" rx="2" />
+                      <path d="M3 10h18" /></svg
+                    >12/4/2025
+                  </td>
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Bread</td>
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Bakery</td>
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">0.5 loaf</td>
+                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Admin User</td>
+                  <td class="px-6 py-3 text-sm font-medium flex items-center justify-end space-x-5">
+                    <a href="{{url_for('main.edit_item')}}" class="text-sm text-green-600 font-medium flex items-center rounded-md">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-pencil-icon lucide-pencil"
+                      >
+                        <path
+                          d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
+                        />
+                        <path d="m15 5 4 4" /></svg
+                    ></a>
+                    <a href="#" class="text-sm text-red-600 font-medium flex items-center gap-2 rounded-md">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-trash-icon lucide-trash"
+                      >
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                        <path d="M3 6h18" />
+                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                      </svg>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
