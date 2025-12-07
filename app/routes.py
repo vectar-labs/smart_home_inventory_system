@@ -47,3 +47,11 @@ def shopping_list():
 @main.route('/consumption')
 def consumption():
     return render_template('consumption_log.html')
+
+@main.route('/add_consumption')
+def add_consumption():
+    return render_template('add_consumption.html')
+
+@main.route('/edit_consumption')
+def edit_consumption():
+    return render_template('edit_consumption.html')
