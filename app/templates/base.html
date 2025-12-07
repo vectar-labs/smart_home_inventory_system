@@ -210,14 +210,36 @@
                 </svg>
               </div>
               <div class="space-y-1">
-                <p class="text-xs font-medium">John Doe</p>
-                <p class="text-xs pb-3">Admin</p>
+                <p class="text-xs font-medium">{{user.username}}</p>
+                <p class="text-xs pb-3">{{user.role}}</p>
               </div></a
             >
           </div>
         </div>
       </div>
-      <div class="col-span-10 pt-4 px-16 bg-gray-50">{% block content %}{% endblock %}</div>
+      <div class="col-span-10 pt-4 px-16 bg-gray-50">
+        <div class="w-full flex items-center justify-end mb-10">
+          <a href="{{url_for('main.logout')}}" class="flex items-center gap-4 text-sm text-gray-600 hover:text-gray-900">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-log-out-icon lucide-log-out"
+            >
+              <path d="m16 17 5-5-5-5" />
+              <path d="M21 12H9" />
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /></svg
+            >Sign out
+          </a>
+        </div>
+        {% block content %}{% endblock %}
+      </div>
     </main>
   </body>
 </html>
