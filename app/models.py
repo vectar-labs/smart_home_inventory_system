@@ -54,6 +54,11 @@ class GroceryItem(db.Model):
     barcode = db.Column(db.String(64), nullable=True)
     photo_url = db.Column(db.String(200), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
+    # NEW RELATIONSHIPS
+    category = db.relationship('Category', backref='grocery_items', lazy='joined')
+    location = db.relationship('Location', backref='grocery_items', lazy='joined')
+    unit = db.relationship('Units', backref='grocery_items', lazy='joined')
 
 class ConsumptionLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)

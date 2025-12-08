@@ -2,10 +2,11 @@
 
 <!-- Add Item Form -->
 
-<div class="max-w-4xl mx-auto bg-white p-8 rounded-lg border border-gray-100 mt-10">
+<div class="max-w-4xl mx-auto bg-white p-8 rounded-lg border border-gray-100 mt-6">
   <h2 class="text-xl font-semibold text-gray-700 mb-3">Edit Item</h2>
-  <p class="text-sm text-gray-400 mb-3">Update item information</p>
-  <form method="POST" action="/add_item">
+  <p class="text-sm text-gray-400 mb-3">Update {{item.name}} information</p>
+  <form method="POST" enctype="multipart/form-data" action="{{ url_for('main.edit_item', item_id= item.id) }}">
+    {{ form.hidden_tag() }}
     <div class="mb-4 flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg">
       <p class="text-sm text-gray-600">Quick Add with Barcode</p>
       <button
@@ -31,111 +32,60 @@
         >Scan Barcode
       </button>
     </div>
+    <!-- Item name field -->
     <div class="mb-4">
-      <label for="item_name" class="block text-gray-600 mb-2">Item Name <sup class="text-red-500">*</sup></label>
-      <input
-        type="text"
-        id="item_name"
-        name="item_name"
-        placeholder="e.g Organic Milk"
-        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
-        required
-      />
+      {{ form.name.label(class="block text-gray-600 mb-2") }} {{ form.name(class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none mb-2",
+      placeholder="e.g Organic Milk") }} {% for error in form.name.errors %}
     </div>
+    <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+    {% endfor %}
     <div class="mb-4 grid grid-cols-2 space-x-4">
       <div class="col-span-1">
-        <label for="quantity" class="block text-gray-600 mb-2">Quantity<sup class="text-red-500">*</sup></label>
-        <input
-          type="number"
-          min="0"
-          id="quantity"
-          placeholder="0"
-          name="quantity"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-          required
-        />
+        {{ form.quantity.label(class="block text-gray-600 mb-2") }} {{ form.quantity(class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
+        focus:outline-none mb-2", placeholder="0", main="0", step="0.01") }}
       </div>
       <div class="col-span-1">
-        <label for="quantity" class="block text-gray-600 mb-2">Unit<sup class="text-red-500">*</sup></label>
-        <select name="category" id="" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm">
-          <option value="other">Other</option>
-        </select>
+        {{ form.unit_id.label(class="block text-gray-600 mb-2") }} {{ form.unit_id(class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
+        focus:outline-none mb-2") }} {% for error in form.unit_id.errors %}
+        <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+        {% endfor %}
       </div>
     </div>
     <div class="mb-4 grid grid-cols-2 space-x-4">
       <div class="col-span-1">
-        <label for="quantity" class="block text-gray-600 mb-2">Category<sup class="text-red-500">*</sup></label>
-        <select name="category" id="" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm">
-          <option value="other">Other</option>
-          <option value="other">Diary</option>
-          <option value="other">Meat</option>
-          <option value="other">Vegetables</option>
-          <option value="other">Fruits</option>
-        </select>
+        {{ form.category_id.label(class="block text-gray-600 mb-2") }} {{ form.category_id(class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
+        focus:outline-none mb-2") }} {% for error in form.unit_id.errors %}
+        <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+        {% endfor %}
       </div>
       <div class="col-span-1">
-        <label for="quantity" class="block text-gray-600 mb-2">Storage Location<sup class="text-red-500">*</sup></label>
-        <select name="category" id="" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm">
-          <option value="other">Other</option>
-        </select>
+        {{ form.location_id.label(class="block text-gray-600 mb-2") }} {{ form.location_id(class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
+        focus:outline-none mb-2") }} {% for error in form.unit_id.errors %}
+        <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+        {% endfor %}
       </div>
     </div>
     <div class="mb-4 grid grid-cols-2 space-x-4">
       <div class="col-span-1">
-        <label for="quantity" class="block text-gray-600 mb-2">Purchase Date<sup class="text-red-500">*</sup></label>
-        <input
-          type="date"
-          id="quantity"
-          placeholder="0"
-          name="quantity"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-          required
-        />
+        {{ form.purchase_date.label(class="block text-gray-600 mb-2") }} {{ form.purchase_date(class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
+        focus:outline-none mb-2") }} {% for error in form.unit_id.errors %}
+        <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+        {% endfor %}
       </div>
       <div class="col-span-1">
-        <label for="quantity" class="block text-gray-600 mb-2">Expiry Date<sup class="text-red-500">*</sup></label>
-        <input
-          type="date"
-          id="quantity"
-          name="quantity"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-          required
-        />
+        {{ form.expiry_date.label(class="block text-gray-600 mb-2") }} {{ form.expiry_date(class="w-full px-4 py-2.5 border border-gray-300 rounded-lg
+        focus:outline-none mb-2") }} {% for error in form.unit_id.errors %}
+        <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+        {% endfor %}
       </div>
     </div>
-    <div class="mb-4 grid grid-cols-6 space-x-6">
-      <div class="col-span-5">
-        <label for="file-input-medium" class="sr-only">Choose file</label>
-        <input
-          type="file"
-          name="photo_url"
-          id=""
-          class="block w-full border border-gray-300 rounded-lg text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-green-50 file:text-green-700 hover:file:bg-green-100 cursor-pointer"
-        />
-      </div>
+    <div class="mb-4 grid grid-cols-1 space-x-6 items-center">
       <div class="col-span-1">
-        <button
-          type="button"
-          class="w-full py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-300 text-gray-500 justify-center cursor-pointer"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-camera-icon lucide-camera"
-          >
-            <path
-              d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"
-            />
-            <circle cx="12" cy="13" r="3" /></svg
-          >Take Photo
-        </button>
+        {{ form.photo.label(class="block text-gray-600 mb-2") }} {{ form.photo(class="block w-full border border-gray-300 rounded-lg text-sm text-gray-600
+        file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-green-50 file:text-green-700 hover:file:bg-green-100 cursor-pointer")
+        }} {% for error in form.unit_id.errors %}
+        <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+        {% endfor %}
       </div>
     </div>
     <div class="mb-4 grid grid-cols-2 space-x-4">

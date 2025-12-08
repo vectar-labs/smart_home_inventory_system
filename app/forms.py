@@ -22,7 +22,14 @@ class LoginForm(FlaskForm):
 class GroceryItemForm(FlaskForm):
     name = StringField('Item Name', validators=[DataRequired()])
     category_id = SelectField('Category', coerce=int)
-    quantity = FloatField('Quantity', validators=[DataRequired(), NumberRange(min=0)])
+    quantity = FloatField('Quantity', 
+                         validators=[DataRequired(), NumberRange(min=0)],
+                         render_kw={
+                             'type': 'number',
+                             'step': '1',
+                             'min': '0',
+                             'placeholder': '0'
+                         })
     expiry_date = DateField('Expiry Date', format='%Y-%m-%d')
     purchase_date = DateField('Purchase Date', format='%Y-%m-%d')
     location_id = SelectField('Location', coerce=int)
