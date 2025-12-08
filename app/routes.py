@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug.security import generate_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
-
-from app.models import User
+from app.forms import RegistrationForm, LoginForm, GroceryItemForm, EditGroceryItemForm, ConsumptionLogForm, EditConsumptionLogForm
+from app.models import User, Location, Category
 from app import db
 
 main = Blueprint('main', __name__)
@@ -11,44 +11,19 @@ main = Blueprint('main', __name__)
 
 @main.route('/signup', methods=['GET', 'POST'])
 def signup():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    form = RegistrationForm()
     
-    if request.method == 'POST':
-        # Handle user registration logic here
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password_hash')
-        
-        # validattion
-        
-        if not all([username, email, password]):
-            flash('All fields are required', 'error')
-            return render_template('register.html')
-        
-        if len(password) < 8:
-            flash('Password must be at least 8 characters', 'error')
-            return render_template('register.html')
-        
-         # Check duplicates
-        if User.query.filter_by(email=email).first():
-            flash('Email already registered', 'error')
-            return render_template('register.html')
-        
-        if User.query.filter_by(username=username).first():
-            flash('Username already taken', 'error')
-            return render_template('register.html')
-        
-         # Create user with hashed password
-        user = User(username=username, email=email)
-        user.set_password(password)  # Hashes before saving
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)  # Hashes before saving
         db.session.add(user)
         db.session.commit()
-        
-        print(f"Registered user: {username} (ID: {user.id})")  # No password in logs
         flash('Account created successfully!', 'success')
         return redirect(url_for('main.login'))
-        
-    if request.method == 'GET':
-        return render_template('register.html')
+    
+    return render_template('register.html', form=form)
 
 @main.route('/', methods=['GET', 'POST'])
 def login():
@@ -72,7 +47,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash('Logged out successfully', 'success')
+    flash('Logged out successfully, see you soon', 'success')
     return redirect(url_for('main.login'))
 
 
@@ -92,7 +67,9 @@ def inventory():
 @main.route('/add_item')
 @login_required
 def add_item():
-    return render_template('add_item.html', user=current_user)
+    locations = Location.query.all()
+    categories = Category.query.all()
+    return render_template('add_item.html', user=current_user, locations=locations, categories=categories)
 
 @main.route('/edit_item')
 @login_required

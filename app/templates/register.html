@@ -12,7 +12,8 @@
       </div>
 
       <div class="w-full h-screen flex flex-col items-center justify-center md:grid-cols-1">
-        <form class="md:w-96 w-80 flex flex-col items-center justify-center" method="POST" action="{{ url_for('main.signup') }}">
+        <form class="md:w-96 w-80 flex flex-col items-center justify-center" method="POST" action="{{ url_for('main.signup') }}" novalidate>
+          {{ form.hidden_tag() }}
           <p>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -47,7 +48,7 @@
             <p class="w-full text-nowrap text-sm text-gray-500/90">or  in with email</p>
             <div class="w-full h-px bg-gray-300/90"></div> -->
           </div>
-
+          <!-- Username Field -->
           <div class="flex items-center w-full bg-transparent border border-gray-300/60 h-12 rounded-full overflow-hidden pl-6 gap-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -64,14 +65,12 @@
               <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>
-            <input
-              type="text"
-              placeholder="Full Name"
-              name="username"
-              class="bg-transparent text-gray-500/80 placeholder-gray-500/80 outline-none text-sm w-full h-full"
-              required
-            />
+            {{ form.username(class="bg-transparent text-gray-500/80 placeholder-gray-500/80 outline-none text-sm w-full h-full", placeholder="Username") }}
           </div>
+          {% for error in form.username.errors %}
+          <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+          {% endfor %}
+          <!-- Email Field -->
           <div class="flex items-center mt-6 w-full bg-transparent border border-gray-300/60 h-12 rounded-full overflow-hidden pl-6 gap-2">
             <svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -81,15 +80,19 @@
                 fill="#6B7280"
               />
             </svg>
-            <input
+            <!-- <input
               type="email"
               name="email"
               placeholder="Email id"
               class="bg-transparent text-gray-500/80 placeholder-gray-500/80 outline-none text-sm w-full h-full"
               required
-            />
+            /> -->
+            {{ form.email(class="bg-transparent text-gray-500/80 placeholder-gray-500/80 outline-none text-sm w-full h-full", placeholder="Email") }}
           </div>
-
+          {% for error in form.email.errors %}
+          <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+          {% endfor %}
+          <!-- Password Field -->
           <div class="flex items-center mt-6 w-full bg-transparent border border-gray-300/60 h-12 rounded-full overflow-hidden pl-6 gap-2">
             <svg width="13" height="17" viewBox="0 0 13 17" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -97,15 +100,18 @@
                 fill="#6B7280"
               />
             </svg>
-            <input
+            <!-- <input
               type="password"
               placeholder="Password"
               name="password_hash"
               class="bg-transparent text-gray-500/80 placeholder-gray-500/80 outline-none text-sm w-full h-full"
               required
-            />
+            /> -->
+            {{ form.password(class="bg-transparent text-gray-500/80 placeholder-gray-500/80 outline-none text-sm w-full h-full", placeholder="Password") }}
           </div>
-
+          {% for error in form.password.errors %}
+          <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+          {% endfor %}
           <div class="w-full flex items-center justify-between mt-8 text-gray-500/80">
             <div class="flex items-center gap-2">
               <input class="h-5" type="checkbox" id="checkbox" />
@@ -114,7 +120,8 @@
             <a class="text-sm underline" href="#">Forgot password?</a>
           </div>
 
-          <button type="submit" class="mt-8 w-full h-11 rounded-full text-white bg-green-500 hover:opacity-90 transition-opacity">Create Account</button>
+          <!-- <button type="submit" class="mt-8 w-full h-11 rounded-full text-white bg-green-500 hover:opacity-90 transition-opacity">Create Account</button> -->
+          {{ form.submit(class="mt-8 w-full h-11 rounded-full text-white bg-green-500 hover:opacity-90 transition-opacity") }}
           <p class="text-gray-500/90 text-sm mt-4">
             Already have an account? <a class="text-green-400 hover:underline font-semibold" href="{{url_for('main.login')}}">Sign in</a>
           </p>

@@ -32,11 +32,11 @@
       </button>
     </div>
     <div class="mb-4">
-      <label for="item_name" class="block text-gray-600 mb-2">Item Name <sup class="text-red-500">*</sup></label>
+      <label for="name" class="block text-gray-600 mb-2">Item Name <sup class="text-red-500">*</sup></label>
       <input
         type="text"
-        id="item_name"
-        name="item_name"
+        id="name"
+        name="name"
         placeholder="e.g Organic Milk"
         class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
         required
@@ -57,47 +57,53 @@
       </div>
       <div class="col-span-1">
         <label for="quantity" class="block text-gray-600 mb-2">Unit<sup class="text-red-500">*</sup></label>
-        <select name="category" id="" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm">
-          <option value="other">Other</option>
+        <select name="unit_id" id="" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm">
+          {% for unit in units %}
+          <option value="{{unit.id}}">{{unit.name}}</option>
+          {% endfor %}
         </select>
       </div>
     </div>
     <div class="mb-4 grid grid-cols-2 space-x-4">
       <div class="col-span-1">
         <label for="quantity" class="block text-gray-600 mb-2">Category<sup class="text-red-500">*</sup></label>
-        <select name="category" id="" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm">
-          <option value="other">Other</option>
-          <option value="other">Diary</option>
-          <option value="other">Meat</option>
-          <option value="other">Vegetables</option>
-          <option value="other">Fruits</option>
+        <select
+          name="category_id"
+          id=""
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+        >
+          {% for category in categories %}
+          <option value="{{category.id}}">{{category.name}}</option>
+          {% endfor %}
         </select>
       </div>
       <div class="col-span-1">
         <label for="quantity" class="block text-gray-600 mb-2">Storage Location<sup class="text-red-500">*</sup></label>
-        <select name="category" id="" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm">
-          <option value="other">Other</option>
+        <select name="location_id" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm">
+          {% for location in locations %}
+          <option value="{{location.id}}">{{location.name}}</option>
+          {% endfor %}
         </select>
       </div>
     </div>
     <div class="mb-4 grid grid-cols-2 space-x-4">
       <div class="col-span-1">
-        <label for="quantity" class="block text-gray-600 mb-2">Purchase Date<sup class="text-red-500">*</sup></label>
+        <label for="purchase_date" class="block text-gray-600 mb-2">Purchase Date<sup class="text-red-500">*</sup></label>
         <input
           type="date"
-          id="quantity"
+          id="puchase_date"
           placeholder="0"
-          name="quantity"
+          name="purchase_date"
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           required
         />
       </div>
       <div class="col-span-1">
-        <label for="quantity" class="block text-gray-600 mb-2">Expiry Date<sup class="text-red-500">*</sup></label>
+        <label for="expiry_date" class="block text-gray-600 mb-2">Expiry Date<sup class="text-red-500">*</sup></label>
         <input
           type="date"
           id="quantity"
-          name="quantity"
+          name="expiry_date"
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
           required
         />
