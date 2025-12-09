@@ -1,3 +1,4 @@
+from datetime import date
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug.security import generate_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
@@ -61,10 +62,45 @@ def dashboard():
 @main.route('/inventory')
 @login_required
 def inventory():
-    
-    grocery_items = GroceryItem.query.filter_by(user_id=current_user.id).all()
-    
-    return render_template('inventory.html', user=current_user, grocery_items=grocery_items)
+    search = request.args.get('search', '').strip()
+    category_id = request.args.get('category_id', type=int)
+    location_id = request.args.get('location_id', type=int)
+    sort = request.args.get('sort', 'name')
+
+    query = GroceryItem.query.filter_by(user_id=current_user.id)
+
+    if search:
+        query = query.filter(GroceryItem.name.ilike(f"%{search}%"))
+
+    if category_id:
+        query = query.filter(GroceryItem.category_id == category_id)
+
+    if location_id:
+        query = query.filter(GroceryItem.location_id == location_id)
+
+    if sort == 'expiry':
+        query = query.order_by(GroceryItem.expiry_date.asc().nulls_last())
+    elif sort == 'quantity':
+        query = query.order_by(GroceryItem.quantity.desc())
+    else:
+        query = query.order_by(GroceryItem.name.asc())
+
+    grocery_items = query.all()
+
+    categories = Category.query.order_by(Category.name).all()
+    locations = Location.query.order_by(Location.name).all()
+
+    return render_template(
+        'inventory.html',user=current_user,
+        grocery_items=grocery_items,
+        categories=categories,
+        locations=locations,
+        search=search,
+        category_id=category_id,
+        location_id=location_id,
+        sort=sort,
+        today=date.today(),
+    )
 
 @main.route('/add_item', methods=['GET', 'POST'])
 @login_required
@@ -81,14 +117,19 @@ def add_item():
     
     if form.validate_on_submit():
         # Process form data and add item to database
+        
+        category_id = form.category_id.data or None 
+        location_id = form.location_id.data or None 
+        unit_id = form.unit_id.data or None
+        
         item = GroceryItem(
             name=form.name.data,
-            category_id=form.category_id.data,
+            category_id=category_id,
             quantity=form.quantity.data,
             expiry_date=form.expiry_date.data,
             purchase_date=form.purchase_date.data,
-            location_id=form.location_id.data,
-            unit_id=form.unit_id.data,
+            location_id=location_id,
+            unit_id=unit_id,
             barcode=form.barcode.data,
             user_id=current_user.id
         )
@@ -138,8 +179,12 @@ def edit_item(item_id):
 
 @main.route('/grocery/<int:item_id>/delete', methods=['POST'])
 @login_required
-def delete_item():
-    return "Item Deleted"
+def delete_grocery(item_id):
+    item = GroceryItem.query.filter_by(id=item_id, user_id=current_user.id).first_or_404()
+    db.session.delete(item)
+    db.session.commit()
+    
+    return redirect(url_for('main.inventory'))
 
 # shopping list Routes
 

@@ -28,103 +28,90 @@
     </a>
   </div>
   <!-- Filters -->
-  <div class="w-full border border-gray-100 mt-5 p-4 bg-white rounded-md" x-data="{ showFilters: false }">
-    <div class="flex items-center justify-between gap-4">
-      <!-- Search input -->
-      <div class="flex-grow flex items-center gap-4">
-        <input
-          type="text"
-          placeholder="Search items..."
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
-        />
+  
+  <form method="GET" action="{{ url_for('main.inventory') }}" class="w-full border border-gray-100 mt-5 p-4 bg-white rounded-md" x-data="{ showFilters: false }">
+  <div class="flex items-center justify-between gap-4">
+    <!-- Search input -->
+    <div class="flex-grow flex items-center gap-4">
+      <input
+        type="text"
+        name="search"
+        value="{{ search or '' }}"
+        placeholder="Search items..."
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+      />
+    </div>
+
+    <button
+      type="button"
+      class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors text-sm flex items-center gap-2 cursor-pointer"
+      x-on:click="showFilters = !showFilters"
+    >
+      <!-- icon -->
+      Filters
+    </button>
+  </div>
+
+  <!-- Filters panel -->
+  <div
+    class="w-full mt-4 gap-4"
+    x-show="showFilters"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+  >
+    <div class="grid grid-cols-3 gap-4">
+      <!-- Category filter -->
+      <div>
+        <label class="block text-gray-600 mb-2 text-sm">Category</label>
+        <select
+          name="category_id"
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-xs"
+        >
+          <option value="">All Categories</option>
+          {% for c in categories %}
+            <option value="{{ c.id }}" {% if category_id == c.id %}selected{% endif %}>{{ c.name }}</option>
+          {% endfor %}
+        </select>
       </div>
 
-      <button
-        class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors text-sm flex items-center gap-2 cursor-pointer"
-        x-on:click="showFilters = !showFilters"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+      <!-- Location filter -->
+      <div>
+        <label class="block text-gray-600 mb-2 text-sm">Storage Location</label>
+        <select
+          name="location_id"
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-xs"
         >
-          <path
-            d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"
-          ></path>
-        </svg>
-        Filters
-      </button>
-    </div>
-    <!-- Filters panel -->
-    <div
-      class="w-full mt-4 gap-4"
-      x-show="showFilters"
-      x-transition:enter="transition ease-out duration-300"
-      x-transition:enter-start="opacity-0"
-      x-transition:enter-end="opacity-100"
-    >
-      <div class="grid grid-cols-3 gap-4">
-        <div>
-          <label for="quantity" class="block text-gray-600 mb-2 text-sm">Category</label>
-          <select
-            name="category"
-            id=""
-            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-xs"
-          >
-            <option value="other">All Categories</option>
+          <option value="">All Locations</option>
+          {% for l in locations %}
+            <option value="{{ l.id }}" {% if location_id == l.id %}selected{% endif %}>{{ l.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
 
-            <option value="other">Diary</option>
-
-            <option value="other">Meat</option>
-
-            <option value="other">Vegetables</option>
-
-            <option value="other">Fruits</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="quantity" class="block text-gray-600 mb-2 text-sm">Storage Location</label>
-          <select
-            name="category"
-            id=""
-            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-xs"
-          >
-            <option value="other">All Locations</option>
-
-            <option value="other">Diary</option>
-
-            <option value="other">Meat</option>
-
-            <option value="other">Vegetables</option>
-
-            <option value="other">Fruits</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="quantity" class="block text-gray-600 mb-2 text-sm">Sort By</label>
-          <select
-            name="category"
-            id=""
-            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-xs"
-          >
-            <option value="other">Name</option>
-
-            <option value="other">Expire Date</option>
-
-            <option value="other">Quantity</option>
-          </select>
-        </div>
+      <!-- Sort -->
+      <div>
+        <label class="block text-gray-600 mb-2 text-sm">Sort By</label>
+        <select
+          name="sort"
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-xs"
+        >
+          <option value="name" {% if sort == 'name' %}selected{% endif %}>Name</option>
+          <option value="expiry" {% if sort == 'expiry' %}selected{% endif %}>Expire Date</option>
+          <option value="quantity" {% if sort == 'quantity' %}selected{% endif %}>Quantity</option>
+        </select>
       </div>
     </div>
   </div>
+
+  <!-- Submit button for filters -->
+  <div class="mt-4 flex justify-end w-full">
+    <button type="submit" class="w-full px-4 py-2.5 bg-gray-500 text-white text-sm rounded-md hover:bg-gray-600 cursor-pointer flex items-center justify-center gap-2">
+      Apply
+    </button>
+  </div>
+</form>
+
 
   <!-- Inventory Table -->
   <div class="mt-6 overflow-x-auto">
@@ -138,8 +125,9 @@
             <p class="text-xs text-gray-500">{{ item.category.name }}</p>
           </div>
           <span class="inline-flex items-center gap-x-1 py-1 px-3 rounded-lg text-xs font-medium bg-red-100 text-red-800"
-            >{{ (item.expiry_date - item.purchase_date).days }}d left</span
-          >
+            >{% if item.expiry_date %} {% set days_left = (item.expiry_date - today).days %} {% if days_left >= 0 %} {{ days_left }}d left {% else %} Expired {{
+            -days_left }}d ago {% endif %} {% else %} No expiry {% endif %}
+          </span>
         </div>
         <div class="pt-5 space-y-3">
           <p class="flex items-center space-x-1 text-sm text-gray-700 font-medium">
@@ -221,24 +209,28 @@
                 <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
                 <path d="m15 5 4 4" /></svg
             ></a>
-            <a href="#" class="text-sm text-red-600 font-medium flex items-center py-1 px-3 gap-2 rounded-md hover:bg-red-100/50">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="lucide lucide-trash-icon lucide-trash"
-              >
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                <path d="M3 6h18" />
-                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-              </svg>
-            </a>
+
+            <!-- Delete button  -->
+            <form action="{{url_for('main.delete_grocery', item_id=item.id)}}" method="POST">
+              <button type="submit" class="text-sm text-red-600 font-medium flex items-center py-1 px-3 gap-2 rounded-md hover:bg-red-100/50">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-trash-icon lucide-trash"
+                >
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                  <path d="M3 6h18" />
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+              </button>
+            </form>
           </div>
         </div>
       </div>
