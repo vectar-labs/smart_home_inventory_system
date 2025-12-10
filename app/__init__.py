@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from config import Config
+from flask import session
 
 # Initialize extensions FIRST (before any model imports)
 db = SQLAlchemy()
@@ -17,7 +18,10 @@ def create_app(config_class=Config):
     db.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = 'main.login'
-    login_manager.login_message = 'Login required'
+    login_manager.refresh_view = 'main.login'
+    login_manager.needs_refresh_message = "Session timed out, please log in again"
+    login_manager.needs_refresh_message_category = "info"
+    login_manager.login_message = 'Session timed out, please log in again'
     migrate.init_app(app, db)
     
     with app.app_context():
@@ -38,6 +42,13 @@ def create_app(config_class=Config):
     from .routes import main
     app.register_blueprint(main)
     from . import routes
+    
+    @app.before_request
+    def make_session_permanent():
+        
+        session.permanent = True
+        session.modified = True
+        app.permanent_session_lifetime = app.config['PERMANENT_SESSION_LIFETIME']
     
     return app
 

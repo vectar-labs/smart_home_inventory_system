@@ -34,7 +34,7 @@
       <div class="px-6 py-3 flex items-center justify-between bg-blue-50 rounded-md">
         <div>
           <h3 class="text-md font-medium text-indigo-500">Total Items</h3>
-          <p class="text-lg font-semibold text-indigo-800 mt-2">150</p>
+          <p class="text-lg font-semibold text-indigo-800 mt-2">{{total_items}}</p>
         </div>
         <div>
           <svg
@@ -59,7 +59,7 @@
       <div class="px-6 py-3 flex items-center justify-between bg-amber-50 rounded-md">
         <div>
           <h3 class="text-md font-medium text-amber-700">Expiring Soon</h3>
-          <p class="text-lg font-semibold text-amber-800 mt-2">150</p>
+          <p class="text-lg font-semibold text-amber-800 mt-2">{% if expiring_soon_count > 0 %} {{ expiring_soon_count }} {% else %} 0 {% endif %}</p>
         </div>
         <div>
           <svg
@@ -84,7 +84,7 @@
       <div class="px-6 py-3 flex items-center justify-between bg-rose-50 rounded-md">
         <div>
           <h3 class="text-md font-medium text-rose-700">Expired</h3>
-          <p class="text-lg font-semibold text-rose-900 mt-2">150</p>
+          <p class="text-lg font-semibold text-rose-900 mt-2">{{expired_items_count}}</p>
         </div>
         <div>
           <svg
@@ -108,7 +108,7 @@
       <div class="px-6 py-3 flex items-center justify-between bg-violet-50 rounded-md">
         <div>
           <h3 class="text-md font-medium text-violet-700">Low Stock</h3>
-          <p class="text-lg font-semibold text-violet-900 mt-2">150</p>
+          <p class="text-lg font-semibold text-violet-900 mt-2">{{low_stock_count}}</p>
         </div>
         <div>
           <svg
@@ -133,7 +133,7 @@
   <!-- recent activities -->
   <div class="grid grid-cols-12 gap-6 mt-5 p-4 bg-white rounded-md border border-gray-100">
     <div class="col-span-6 border-2 border-gray-100 px-6 py-4 rounded-md">
-      <div class="flex justify-between items-center">
+      <div class="flex justify-between items-center border-b border-gray-200 pb-3">
         <h3 class="text-sm text-gray-700 font-medium">Expiring Soon</h3>
         <div>
           <svg
@@ -157,7 +157,21 @@
       </div>
       <div class="">
         <div class="mt-4 space-y-4">
+          {% if expiring_soon_count == 0 %}
+          <p class="text-sm font-medium text-gray-600 mt-5">No items expiring soon.</p>
+          {% else %} {% for item in expiring_soon_items %}
           <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-800 mb-1">{{ item.name }}</p>
+              <p class="text-xs text-gray-500">Expires on {{ item.expiry_date.strftime('%d / %m / %Y') }}</p>
+            </div>
+            <div>
+              <span class="text-sm font-semibold text-red-500">{{ item.quantity }} {{ item.unit.name }}</span>
+            </div>
+          </div>
+          {% endfor %} {% endif %}
+
+          <!-- <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-gray-800">Eggs</p>
               <p class="text-xs text-gray-500">Expires in 3 days</p>
@@ -183,13 +197,13 @@
             <div>
               <span class="text-sm font-semibold text-red-500">500 g</span>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
     <div class="col-span-6 border-2 border-gray-100 px-6 py-4 rounded-md">
-      <div class="flex justify-between items-center">
-        <h3 class="text-sm text-gray-700 font-medium">Recent Activity</h3>
+      <div class="flex justify-between items-center border-b border-gray-200 pb-3">
+        <h3 class="text-sm text-gray-700 font-medium">Low Stock Items</h3>
         <div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -211,7 +225,18 @@
       </div>
       <div class="">
         <div class="mt-4 space-y-4">
+          {%for item in low_stock_items %}
           <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-800 mb-1">{{ item.name }}</p>
+              <p class="text-xs text-gray-500">Only {{ item.quantity }} {{ item.unit.name }} left</p>
+            </div>
+            <div>
+              <span class="text-sm font-semibold text-gray-600">{{ item.quantity }} {{ item.unit.name }}</span>
+            </div>
+          </div>
+          {% endfor %}
+          <!-- <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-gray-800">Added Bread to Inventory</p>
               <p class="text-xs text-gray-500">2 hours ago</p>
@@ -237,10 +262,13 @@
             <div>
               <span class="text-sm font-semibold text-gray-600">12 Pieces</span>
             </div>
-          </div>
-          <div class="border-1 border-gray-100 rounded-md flex items-center justify-center px-4 py-2 mt-5 cursor-pointer hover:bg-gray-50">
-            <p class="text-xs">View Full Inventory</p>
-          </div>
+          </div> -->
+          <a
+            href="{{url_for('main.inventory')}}"
+            class="border border-green-100 bg-green-100 rounded-md flex items-center justify-center px-4 py-2 mt-5 cursor-pointer hover:bg-green-50"
+          >
+            <p class="text-xs font-medium">View Full Inventory</p>
+          </a>
         </div>
       </div>
     </div>
@@ -248,7 +276,9 @@
   <!-- Tips -->
   <div class="px-6 py-4 rounded-md bg-green-100 mt-6">
     <h3 class="text-sm text-gray-700 font-medium mb-2">Quick Tip</h3>
-    <p class="text-sm font-regular text-gray-600">You have 2 items expiring within 3 days. Consider using them or add them to your meal plan today.</p>
+    <p class="text-sm font-regular text-gray-600">
+      You have {{expiring_soon_count}} items expiring within 3 days. Consider using them or add them to your meal plan today.
+    </p>
   </div>
 </div>
 {% endblock %}

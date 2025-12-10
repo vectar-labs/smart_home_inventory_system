@@ -30,37 +30,25 @@
   </div>
   <!-- Add Items forms -->
   <div class="flex items-center space-x-2 p-4 bg-white rounded-md border border-gray-100" x-show="open" x-transition>
-    <div class="w-full">
+    <form method="POST" action="{{url_for('main.shopping_list')}}" class="w-full">
+      {{ form.hidden_tag() }}
       <h2 class="text-sm font-semibold text-gray-700">Add New Item</h2>
       <div class="mt-2 gap-3">
-        <input type="text" placeholder="Item Name" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none col-span-1" />
+        {{ form.grocery_item_id(class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none mb-2", placeholder="0", main="0", step="0.01") }}
       </div>
       <div class="mt-2 grid grid-cols-2 gap-3">
-        <input type="number" placeholder="1" min="1" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none col-span-1" />
-        <select name="" id="" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none text-gray-500">
-          <option value="Other">pieces</option>
-          <option value="">kg</option>
-          <option value="">grams</option>
-          <option value="">litres</option>
-          <option value="">ml</option>
-          <option value="">pack</option>
-          <option value="">can</option>
-          <option value="">bottle</option>
-        </select>
+        <div>
+          {{ form.quantity(class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none mb-2", placeholder="0", main="0", step="0.01") }}
+        </div>
+        <div>{{ form.unit_id(class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none mb-2 text-sm") }}</div>
       </div>
-      <div class="mt-2 gap-3">
-        <select name="" id="" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none text-gray-500">
-          <option value="Other">Other</option>
-          <option value="">Diary</option>
-          <option value="">Meat</option>
-          <option value="">Vegitables</option>
-        </select>
-      </div>
+      <div class="mt-2 gap-3">{{ form.category_id(class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none mb-2 text-sm") }}</div>
       <div class="mt-2 grid grid-cols-2 gap-3">
-        <button class="bg-green-600 text-white w-full text-sm rounded-md py-2 cursor-pointer">Add to List</button>
-        <button class="border border-gray-300 text-slate-600 w-full text-sm rounded-md py-2 cursor-pointer" x-on:click="open = false">Cancel</button>
+        <!-- <button type="submit" class="bg-green-600 text-white w-full text-sm rounded-md py-2 cursor-pointer">Add to List</button> -->
+        {{ form.submit(class="bg-green-600 text-white w-full text-sm rounded-md py-2 cursor-pointer") }}
+        <p class="block border border-gray-300 text-slate-600 w-full text-sm rounded-md py-2 cursor-pointer text-center" x-on:click="open = false">Cancel</p>
       </div>
-    </div>
+    </form>
   </div>
   <!-- description -->
   <div class="flex items-center space-x-2 p-4 rounded-md bg-green-100/50">
@@ -93,63 +81,29 @@
         <h2 class="text-md font-semibold text-gray-700 mb-4">Items to Buy</h2>
       </div>
       <!-- Item -->
+      {% for item in items %}
       <div class="flex items-center justify-between p-4 bg-white rounded-md border border-gray-100">
         <div class="flex items-center gap-4">
-          <input type="checkbox" class="w-5 h-5 text-green-500 rounded-md" />
+          <input type="checkbox" class="w-5 h-5 text-green-500 rounded-md" {% if item.purchased %}checked{% endif %} />
           <div>
-            <p class="text-gray-700 font-medium text-md">Apples</p>
-            <p class="text-sm text-slate-500"><span> 6 pieces</span> <span>Fruits</span></p>
+            <p class="text-gray-700 font-medium text-md">{{ item.grocery_item.name if item.grocery_item else 'Unknown item' }}</p>
+            <p class="text-sm text-slate-500">
+              <span>{{ item.quantity }} {{ item.unit.name if item.unit else '' }}</span>
+              <span>{{ item.category.name if item.category else '' }}</span>
+            </p>
           </div>
         </div>
-        <span class="text-sm text-slate-500 flex items-center gap-5"
-          >Added by Sarah Adam
-          <span
-            ><svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="lucide lucide-trash-icon lucide-trash cursor-pointer text-red-500 hover:text-red-600"
-            >
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-              <path d="M3 6h18" />
-              <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg></span
-        ></span>
+        <div class="flex items-center gap-3">
+          <span class="text-sm text-slate-500 font-regular"> Added by {{ item.user.username }} </span>
+          <form action="{{ url_for('main.delete_shopping_list_item', item_id=item.id) }}" method="POST" class="inline">
+            <button type="submit" class="text-red-500 hover:text-red-700 text-sm font-medium ml-4">Remove</button>
+          </form>
+        </div>
       </div>
+      {% else %}
+      <p class="text-sm text-slate-500">No items yet. Add your first item above.</p>
+      {% endfor %}
       <!-- Item -->
-      <div class="flex items-center justify-between p-4 bg-white rounded-md border border-gray-100">
-        <div class="flex items-center gap-4">
-          <input type="checkbox" class="w-5 h-5 text-green-500 rounded-md" />
-          <div>
-            <p class="text-gray-700 font-medium">Apples</p>
-            <p class="text-sm text-slate-500"><span> 6 pieces</span> <span>Fruits</span></p>
-          </div>
-        </div>
-        <span class="text-sm text-slate-500 flex items-center gap-5"
-          >Added by Sarah Adam
-          <span
-            ><svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="lucide lucide-trash-icon lucide-trash cursor-pointer text-red-500 hover:text-red-600"
-            >
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-              <path d="M3 6h18" />
-              <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg></span
-        ></span>
-      </div>
     </div>
   </div>
 </div>

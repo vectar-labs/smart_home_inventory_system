@@ -66,3 +66,16 @@ class ConsumptionLog(db.Model):
     date = db.Column(db.Date, nullable=False)
     qty_used = db.Column(db.Float, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+
+class ShoppingListItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    grocery_item_id = db.Column(db.Integer, db.ForeignKey('grocery_item.id'), nullable=False)
+    quantity = db.Column(db.Float, nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)
+    unit_id = db.Column(db.Integer, db.ForeignKey('units.id'), nullable=True)
+    purchased = db.Column(db.Boolean, default=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref='shopping_list_items', lazy='joined')
+    unit = db.relationship('Units', backref='shopping_list_items', lazy='joined')
+    grocery_item = db.relationship('GroceryItem', backref='shopping_list_items', lazy='joined')

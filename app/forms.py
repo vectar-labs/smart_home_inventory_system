@@ -1,6 +1,6 @@
 import datetime
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, FloatField, DateField, SelectField, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, FloatField, DateField, SelectField, ValidationError,BooleanField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, NumberRange
 from flask_wtf.file import FileField, FileAllowed
 from app.models import User, Category, Location, Units, GroceryItem
@@ -74,4 +74,20 @@ class EditConsumptionLogForm(FlaskForm):
         item = GroceryItem.query.get(self.grocery_item_id.data)
         if item and field.data > item.quantity:
             raise ValidationError('Quantity used cannot exceed available quantity.')
-        
+    
+    
+    
+class ShoppingListItemForm(FlaskForm):
+    grocery_item_id = SelectField('Shopping Item', coerce=int)
+    quantity = FloatField('Quantity', 
+                         validators=[DataRequired(), NumberRange(min=0)],
+                         render_kw={
+                             'type': 'number',
+                             'step': '1',
+                             'min': '0',
+                             'placeholder': '0'
+                         })
+    category_id = SelectField('Category', coerce=int)
+    purchased = BooleanField('Purchased?')
+    unit_id = SelectField('Unit', coerce=int)
+    submit = SubmitField('Add to Shopping List')

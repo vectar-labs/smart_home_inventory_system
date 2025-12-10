@@ -1,9 +1,9 @@
-from datetime import date
+from datetime import date, timedelta
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug.security import generate_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
-from app.forms import RegistrationForm, LoginForm, GroceryItemForm, EditGroceryItemForm, ConsumptionLogForm, EditConsumptionLogForm
-from app.models import User, Location, Category, GroceryItem, Units, ConsumptionLog 
+from app.forms import RegistrationForm, LoginForm, GroceryItemForm, EditGroceryItemForm, ConsumptionLogForm, EditConsumptionLogForm, ShoppingListItemForm
+from app.models import User, Location, Category, GroceryItem, Units, ConsumptionLog, ShoppingListItem
 from app import db
 
 main = Blueprint('main', __name__)
@@ -36,7 +36,7 @@ def login():
     if form.validate_on_submit():
             user = User.query.filter_by(email=form.email.data).first()
             if user and user.check_password(form.password.data):
-                login_user(user)
+                login_user(user, remember=False)
                 return redirect(url_for('main.dashboard'))
             else:
                 flash('Invalid email or password', 'error')
@@ -55,7 +55,25 @@ def logout():
 @main.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html', user=current_user)
+    today = date.today()
+    limit = today + timedelta(days=3)
+    
+    expiring_soon_items =( GroceryItem.query.filter_by(user_id=current_user.id).filter(GroceryItem.expiry_date != None).filter(GroceryItem.expiry_date >= today).filter(GroceryItem.expiry_date <= limit).all())
+    expiring_soon_count = (
+    GroceryItem.query
+    .filter_by(user_id=current_user.id)
+    .filter(GroceryItem.expiry_date != None)
+    .filter(GroceryItem.expiry_date >= today)
+    .filter(GroceryItem.expiry_date <= limit)
+    .count()
+)
+    expired_items_count = GroceryItem.query.filter_by(user_id=current_user.id).filter(GroceryItem.expiry_date != None).filter(GroceryItem.expiry_date < today).count()
+    
+    user_item_count = GroceryItem.query.filter_by(user_id=current_user.id).count()
+    
+    low_stock_items = GroceryItem.query.filter_by(user_id=current_user.id).filter(GroceryItem.quantity <= 4).all()
+    low_stock_count = GroceryItem.query.filter_by(user_id=current_user.id).filter(GroceryItem.quantity <= 4).count()
+    return render_template('dashboard.html', user=current_user, total_items=user_item_count, expiring_soon_count=expiring_soon_count, low_stock_count=low_stock_count, expiring_soon_items=expiring_soon_items, expired_items_count=expired_items_count, low_stock_items=low_stock_items)
 
 # inventory Routes
 
@@ -188,11 +206,6 @@ def delete_grocery(item_id):
 
 # shopping list Routes
 
-@main.route('/shopping_list')
-@login_required
-def shopping_list():
-    return render_template('shopping_list.html', user=current_user)
-
 
 # consumption Routes
 
@@ -210,3 +223,53 @@ def add_consumption():
 @login_required
 def edit_consumption():
     return render_template('edit_consumption.html', user=current_user)
+
+
+# shopping list Routes
+@main.route('/shopping_list', methods=['GET', 'POST'])
+@login_required
+def shopping_list():
+    form = ShoppingListItemForm()
+
+    # Set choices on every request
+    form.category_id.choices = [(0, 'Select Category')] + [
+        (c.id, c.name) for c in Category.query.all()
+    ]
+    form.unit_id.choices = [(0, 'Select Unit')] + [
+        (u.id, u.name) for u in Units.query.all()
+    ]
+    form.grocery_item_id.choices = [(0, 'Select Item')] + [
+        (i.id, i.name) for i in GroceryItem.query.filter_by(user_id=current_user.id).filter(GroceryItem.quantity <=4).all()
+    ]
+
+    if form.validate_on_submit():
+        category_id = form.category_id.data or None
+        unit_id = form.unit_id.data or None
+        grocery_item_id = form.grocery_item_id.data or None
+
+        item = ShoppingListItem(
+            grocery_item_id=grocery_item_id,
+            quantity=form.quantity.data,
+            category_id=category_id,
+            unit_id=unit_id,
+            purchased=form.purchased.data,
+            user_id=current_user.id,
+        )
+        db.session.add(item)
+        db.session.commit()
+        flash('Item added to shopping list', 'success')
+        return redirect(url_for('main.shopping_list'))
+
+    items = ShoppingListItem.query.filter_by(user_id=current_user.id).all()
+    return render_template('shopping_list.html', form=form, items=items, user=current_user)
+
+
+
+@main.route('/shopping_list_item/<int:item_id>/delete', methods=['POST'])
+@login_required
+def delete_shopping_list_item(item_id):
+    item = ShoppingListItem.query.filter_by(id=item_id, user_id=current_user.id).first_or_404()
+    db.session.delete(item)
+    db.session.commit()
+    
+    return redirect(url_for('main.shopping_list'))
