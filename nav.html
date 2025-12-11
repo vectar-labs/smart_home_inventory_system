@@ -1,0 +1,467 @@
+<header>
+  <nav class="max-w-7xl w-full px-4 md:px-0">
+    <div class="relative sm:flex sm:items-center gap-10 md:gap-0">
+      <div class="flex items-center justify-between">
+        <a href="{{ route('pages.home') }}" aria-label="Brand"><img src="/images/mobile-logo.png" alt="" class="w-28 md:w-36" /></a>
+        <div class="sm:hidden">
+          <button
+            type="button"
+            class="hs-collapse-toggle p-2 inline-flex justify-center items-center gap-x-2 rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-transparent dark:border-neutral-700 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10"
+            id="hs-navbar-to-overlay-collapse"
+            aria-haspopup="dialog"
+            aria-expanded="false"
+            aria-controls="hs-navbar-to-overlay"
+            aria-label="Toggle navigation"
+            data-hs-overlay="#hs-navbar-to-overlay"
+            data-hs-overlay-options='{"moveOverlayToBody": 640}'
+          >
+            <svg
+              class="shrink-0 size-4"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="3" x2="21" y1="6" y2="6" />
+              <line x1="3" x2="21" y1="12" y2="12" />
+              <line x1="3" x2="21" y1="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div
+        id="hs-navbar-to-overlay"
+        class="hs-overlay hs-overlay-open:translate-x-0 [--auto-close:sm] -translate-x-full fixed top-0 start-0 transition-all duration-300 transform h-full w-full sm:w-96 z-60 bg-[#f6f5ef] border-e sm:static sm:block sm:h-auto sm:w-full sm:border-e-transparent sm:transition-none sm:transform-none sm:translate-x-0 sm:z-40 dark:bg-neutral-800 sm:dark:bg-neutral-900 dark:border-e-neutral-700 sm:dark:border-e-transparent hidden"
+        role="dialog"
+        tabindex="-1"
+        aria-label="Sidebar"
+        data-hs-overlay-close-on-resize
+      >
+        <div
+          class="overflow-hidden overflow-y-auto h-full [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
+        >
+          <div class="flex flex-col gap-y-10 gap-x-10 sm:gap-y-0 sm:flex-row sm:items-center sm:justify-end p-2 sm:p-0">
+            <div class="py-3 sm:hidden flex justify-between items-center border-b border-gray-200 dark:border-neutral-700">
+              <h3 class="font-medium text-gray-800 dark:text-neutral-200">Menu</h3>
+              <button
+                type="button"
+                class="py-1.5 px-2 inline-flex justify-center items-center gap-x-1 rounded-full border border-gray-200 text-xs text-gray-800 hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:hover:bg-neutral-700 dark:text-neutral-200 dark:focus:bg-neutral-700"
+                aria-label="Close"
+                data-hs-overlay="#hs-navbar-to-overlay"
+                aria-expanded="true"
+              >
+                Close
+                <svg
+                  class="shrink-0 size-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M18 6 6 18"></path>
+                  <path d="m6 6 12 12"></path>
+                </svg>
+              </button>
+            </div>
+
+            <a href="{{ route('pages.home') }}" class="sm:p-2 text-[#522731] font-semibold text-sm focus:outline-hidden" href="#" aria-current="page">HOME</a>
+            {{-- MENU LINK 1 --}}
+            <div
+              class="hs-dropdown [--strategy:static] sm:[--strategy:absolute] [--adaptive:none] sm:[--trigger:hover] [--is-collapse:true] sm:[--is-collapse:false]"
+            >
+              <button
+                id="hs-mega-menu"
+                type="button"
+                class="hs-dropdown-toggle sm:p-2 flex items-center w-full text-[#522731] font-semibold text-sm hover:text-gray-400 focus:outline-hidden focus:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500 dark:focus:text-neutral-500"
+                aria-haspopup="menu"
+                aria-expanded="false"
+                aria-label="Mega Menu"
+              >
+                TOUR PACKAGES
+                <svg
+                  class="hs-dropdown-open:-rotate-180 sm:hs-dropdown-open:rotate-0 duration-300 ms-2 shrink-0 size-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+
+              <div
+                class="hs-dropdown-menu sm:transition-[opacity,margin] sm:ease-in-out sm:duration-[150ms] hs-dropdown-open:opacity-100 opacity-0 w-full hidden z-10 sm:mt-3 top-full start-0 min-w-60 bg-white sm:shadow-md rounded-lg py-2 sm:px-2 dark:bg-neutral-800 sm:dark:border dark:border-neutral-700 dark:divide-neutral-700 before:absolute"
+                role="menu"
+                aria-orientation="vertical"
+                aria-labelledby="hs-mega-menu"
+              >
+                <div class="sm:grid sm:grid-cols-3 gap-5">
+                  <div class="flex flex-col gap-3 py-8">
+                    <a
+                      href="{{ route('pages.spice-stone') }}"
+                      class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-[#522731]font-semibold hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700 dark:focus:text-neutral-300"
+                      href="#"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="28"
+                        height="28"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.25"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-bus-icon lucide-bus text-[#522731]"
+                      >
+                        <path d="M8 6v6" />
+                        <path d="M15 6v6" />
+                        <path d="M2 12h19.6" />
+                        <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3" />
+                        <circle cx="7" cy="18" r="2" />
+                        <path d="M9 18h5" />
+                        <circle cx="16" cy="18" r="2" />
+                      </svg>
+                      <p class="text-[#522731] font-semibold">Spice farms & Stone Town</p>
+                    </a>
+                    <a
+                      href="{{ route('pages.safari-blue') }}"
+                      class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700 dark:focus:text-neutral-300"
+                      href="#"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#522731" viewBox="0 0 256 256">
+                        <path
+                          d="M247.21,172.53A8,8,0,0,0,240,168H144V144h72a8,8,0,0,0,5.92-13.38L144,44.91V8a8,8,0,0,0-14.21-5l-104,128A8,8,0,0,0,32,144h96v24H16a8,8,0,0,0-6.25,13l29.6,37a15.93,15.93,0,0,0,12.49,6H204.16a15.93,15.93,0,0,0,12.49-6l29.6-37A8,8,0,0,0,247.21,172.53ZM197.92,128H144V68.69ZM48.81,128,128,30.53V128Zm155.35,80H51.84l-19.2-24H223.36Z"
+                        ></path>
+                      </svg>
+                      <p class="text-[#522731] font-semibold">The Ultimate Safari Blue Dhow Adventure</p>
+                    </a>
+                    <a
+                      href="{{ route('pages.mnemba-island') }}"
+                      class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700 dark:focus:text-neutral-300"
+                      href="#"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#522731" viewBox="0 0 256 256">
+                        <path
+                          d="M176,104a32,32,0,1,0-32-32A32,32,0,0,0,176,104Zm0-48a16,16,0,1,1-16,16A16,16,0,0,1,176,56Zm46.16,129.24a8,8,0,0,1-1,11.26c-17.36,14.39-32.86,19.5-47,19.5-18.58,0-34.82-8.82-49.93-17-25.35-13.76-47.24-25.65-79.07.74a8,8,0,1,1-10.22-12.31c40.17-33.29,70.32-16.93,96.93-2.49,25.35,13.77,47.24,25.65,79.07-.74A8,8,0,0,1,222.16,185.24ZM34.89,147.42a8,8,0,1,0,10.22,12.31c31.83-26.38,53.72-14.5,79.07-.74,15.11,8.2,31.35,17,49.93,17,14.14,0,29.64-5.11,47-19.5a8,8,0,1,0-10.22-12.31,75.79,75.79,0,0,1-19.28,12.06l-53.84-53.82A103.34,103.34,0,0,0,64.24,72H40a8,8,0,0,0,0,16H64.24a87.66,87.66,0,0,1,41.88,10.56L76.49,128.17C63.82,129.35,50.07,134.84,34.89,147.42Zm91.57-33.67,46.13,46.12c-14-.43-26.88-7.39-40.77-14.93-10.75-5.84-22.09-12-34.42-15.05l22.26-22.26A87.14,87.14,0,0,1,126.46,113.75Z"
+                        ></path>
+                      </svg>
+                      <p class="text-[#522731] font-semibold">Mnemba Island & Snorkeling</p>
+                    </a>
+                    <a
+                      href="{{ route('pages.stone-prison-nakupenda') }}"
+                      class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700 dark:focus:text-neutral-300"
+                      href="#"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="34"
+                        height="34"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.25"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-bus-icon lucide-bus text-[#522731]"
+                      >
+                        <path d="M8 6v6" />
+                        <path d="M15 6v6" />
+                        <path d="M2 12h19.6" />
+                        <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3" />
+                        <circle cx="7" cy="18" r="2" />
+                        <path d="M9 18h5" />
+                        <circle cx="16" cy="18" r="2" />
+                      </svg>
+                      <p class="text-[#522731] font-semibold">Stone Town, Prison Island & Nakupenda Sandbank</p>
+                    </a>
+                    <a
+                      href="{{ route('pages.jozani-village-kizimkazi') }}"
+                      class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700 dark:focus:text-neutral-300"
+                      href="#"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#522731" viewBox="0 0 256 256">
+                        <path
+                          d="M198.1,62.59a76,76,0,0,0-140.2,0A71.71,71.71,0,0,0,16,127.8C15.9,166,48,199,86.14,200A72.09,72.09,0,0,0,120,192.47V232a8,8,0,0,0,16,0V192.47A72.17,72.17,0,0,0,168,200l1.82,0C208,199,240.11,166,240,127.8A71.71,71.71,0,0,0,198.1,62.59ZM169.45,184a56.08,56.08,0,0,1-33.45-10v-41l43.58-21.78a8,8,0,1,0-7.16-14.32L136,115.06V88a8,8,0,0,0-16,0v51.06L83.58,120.84a8,8,0,1,0-7.16,14.32L120,156.94v17a56,56,0,0,1-33.45,10C56.9,183.23,31.92,157.52,32,127.84A55.77,55.77,0,0,1,67.11,76a8,8,0,0,0,4.53-4.67,60,60,0,0,1,112.72,0A8,8,0,0,0,188.89,76,55.79,55.79,0,0,1,224,127.84C224.08,157.52,199.1,183.23,169.45,184Z"
+                        ></path>
+                      </svg>
+                      <p class="text-[#522731] font-semibold">Jozani forest, Village Tour & Kizimkazi Old Mosque</p>
+                    </a>
+                    <a
+                      href="{{ route('pages.jozani-stone-town-prison-island') }}"
+                      class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700 dark:focus:text-neutral-300"
+                      href="#"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="28"
+                        height="28"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.25"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-bus-icon lucide-bus text-[#522731]"
+                      >
+                        <path d="M8 6v6" />
+                        <path d="M15 6v6" />
+                        <path d="M2 12h19.6" />
+                        <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3" />
+                        <circle cx="7" cy="18" r="2" />
+                        <path d="M9 18h5" />
+                        <circle cx="16" cy="18" r="2" />
+                      </svg>
+                      <p class="text-[#522731] font-semibold">Jozan Forest, Stone Town & Prison Island</p>
+                    </a>
+                  </div>
+
+                  <div class="flex flex-col py-8 px-4">
+                    <h3 class="text-xl font-bold text-[#522731]">Explore Our Tours Packages</h3>
+                    <p class="py-4 text-[15px]">
+                      Zanmodest crafts personalized, modest-friendly tours that immerse you in Zanzibar’s vibrant Swahili culture, guided by passionate locals.
+                      Explore pristine beaches, historic Stone Town, and breathtaking natural wonders through mindful journeys that honor Islamic values and
+                      connect you to East Africa’s heart
+                    </p>
+
+                    <a
+                      href="{{ route('pages.book-trip') }}"
+                      class="flex items-center gap-3 bg-[#71414c] w-fit text-white text-center mt-4 text-md font-semibold px-8 py-2.5 rounded-md"
+                      >Book Your Trip
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.75"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-chevron-right-icon lucide-chevron-right"
+                      >
+                        <path d="m9 18 6-6-6-6" /></svg
+                    ></a>
+                  </div>
+
+                  <div class="flex flex-col py-8 px-2">
+                    <img src="/images/nav-image-1.jpg" alt="" class="object-cover rounded-md" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            {{-- MENU LINK 2 --}}
+            <div
+              class="hs-dropdown [--strategy:static] sm:[--strategy:absolute] [--adaptive:none] sm:[--trigger:hover] [--is-collapse:true] sm:[--is-collapse:false]"
+            >
+              <button
+                id="hs-mega-menu"
+                type="button"
+                class="hs-dropdown-toggle sm:p-2 flex items-center w-full text-[#522731] font-semibold text-sm hover:text-gray-400 focus:outline-hidden focus:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500 dark:focus:text-neutral-500"
+                aria-haspopup="menu"
+                aria-expanded="false"
+                aria-label="Mega Menu"
+              >
+                EXPERIENCES
+                <svg
+                  class="hs-dropdown-open:-rotate-180 sm:hs-dropdown-open:rotate-0 duration-300 ms-2 shrink-0 size-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+
+              <div
+                class="hs-dropdown-menu sm:transition-[opacity,margin] sm:ease-in-out sm:duration-[150ms] hs-dropdown-open:opacity-100 opacity-0 w-full hidden z-10 sm:mt-3 top-full start-0 min-w-60 bg-white sm:shadow-md rounded-lg py-2 sm:px-2 dark:bg-neutral-800 sm:dark:border dark:border-neutral-700 dark:divide-neutral-700 before:absolute"
+                role="menu"
+                aria-orientation="vertical"
+                aria-labelledby="hs-mega-menu"
+              >
+                <div class="sm:grid sm:grid-cols-3 gap-3">
+                  <div class="flex flex-col gap-2">
+                    <a
+                      href="{{ route('pages.jozani-village-kizimkazi') }}"
+                      class="relative flex h-48 flex-col items-center gap-x-3.5 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700 dark:focus:text-neutral-300 overflow-hidden"
+                      href="#"
+                    >
+                      <img src="/images/swahili-culture.jpg" alt="" class="object-cover" />
+                      <h4 class="absolute bottom-2.5 left-8 font-extrabold text-lg z-40 text-white">Zanzibar Swahili Cultural Journey</h4>
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    </a>
+                    <a
+                      href="{{ route('pages.jozani-stone-town-prison-island') }}"
+                      class="relative h-48 flex flex-col items-center overflow-hidden gap-x-3.5 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700 dark:focus:text-neutral-300"
+                      href="#"
+                    >
+                      <img src="/images/stonetown-tour.jpg" alt="" class="w-full h-full object-cover" />
+                      <h4 class="absolute bottom-2.5 left-8 z-30 font- text-lg font-extrabold text-white">Zanzibar's Greatest Hits</h4>
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    </a>
+                  </div>
+
+                  <div class="flex flex-col gap-2">
+                    <a
+                      href="{{ route('pages.stone-prison-nakupenda') }}"
+                      class="relative h-48 flex flex-col items-center gap-x-3.5 overflow-hidden rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700 dark:focus:text-neutral-300"
+                      href="#"
+                    >
+                      <img src="/images/sandbank-3.jpg" alt="" class="w-full h-full object-cover" />
+                      <h4 class="absolute bottom-2.5 left-8 font-extrabold text-lg z-40 text-white">Island History and Sandbank Trip</h4>
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    </a>
+                    <a
+                      href="{{ route('pages.jozani-stone-town-prison-island') }}"
+                      class="relative h-48 flex flex-col items-center gap-x-3.5 overflow-hidden rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700 dark:focus:text-neutral-300"
+                      href="#"
+                    >
+                      <img src="/images/old-mosque.jpg" alt="" class="w-full h-full object-cover" />
+                      <h4 class="absolute bottom-2.5 left-8 z-30 font-extrabold text-lg text-white">Historic Islamic Sites</h4>
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    </a>
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <a
+                      href="{{ route('pages.spice-stone') }}"
+                      class="relative h-48 flex flex-col items-center gap-x-3.5 overflow-hidden rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700 dark:focus:text-neutral-300"
+                      href="#"
+                    >
+                      <img src="/images/farm.webp" alt="" class="w-full h-full object-cover" />
+                      <h4 class="absolute bottom-2.5 left-8 font-extrabold text-lg z-40 text-white">Spice & Culture Discovery</h4>
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    </a>
+                    <a
+                      href="{{ route('pages.safari-blue') }}"
+                      class="relative h-48 flex flex-col items-center overflow-hidden gap-x-3.5 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700 dark:focus:text-neutral-300"
+                      href="#"
+                    >
+                      <img src="/images/snorkeling-tour.jpg" alt="" class="w-full h-full object-cover" />
+                      <h4 class="absolute bottom-2.5 left-8 z-30 font-extrabold text-lg text-white">The Ultimate Safari Blue Dhow Adventure</h4>
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {{-- MENU LINK 3 --}}
+            <div
+              class="hs-dropdown [--strategy:static] sm:[--strategy:absolute] [--adaptive:none] sm:[--trigger:hover] [--is-collapse:true] sm:[--is-collapse:false]"
+            >
+              <button
+                id="hs-mega-menu"
+                type="button"
+                class="hs-dropdown-toggle sm:p-2 flex items-center w-full text-[#522731] font-semibold text-sm hover:text-gray-400 focus:outline-hidden focus:text-gray-400"
+                aria-haspopup="menu"
+                aria-expanded="false"
+                aria-label="Mega Menu"
+              >
+                ABOUT US
+                <svg
+                  class="hs-dropdown-open:-rotate-180 sm:hs-dropdown-open:rotate-0 duration-300 ms-2 shrink-0 size-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+
+              <div
+                class="hs-dropdown-menu sm:transition-[opacity,margin] sm:ease-in-out sm:duration-[150ms] hs-dropdown-open:opacity-100 opacity-0 w-full hidden z-10 sm:mt-3 top-full start-0 min-w-60 bg-white sm:shadow-md rounded-lg py-2 sm:px-2 before:absolute"
+                role="menu"
+                aria-orientation="vertical"
+                aria-labelledby="hs-mega-menu"
+              >
+                <div class="sm:grid sm:grid-cols-3 gap-4">
+                  <div class="flex flex-col py-2">
+                    <a
+                      class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-[18px] font-semibold hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 text-[#522731]"
+                      href="#"
+                    >
+                      Why Choose Zanmodest Tour?
+                    </a>
+                    <div class="p-4 mt-5">
+                      <h4 class="text-lg font-semibold text-[#522731] mb-4">Follow Us on Social Media</h4>
+                      <p class="text-sm leading-relaxed">Stay connected with the latest updates from the Zanmodest Travel team</p>
+                      <div class="flex items-center gap-3 mt-3">
+                        <a href=""><img src="/images/facebook.png" alt="" class="w-6" /> </a>
+                        <a href=""> <img src="/images/instagram.png" alt="" class="w-6" /> </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex flex-col py-4 px-4">
+                    <h3 class="text-[20px] font-extrabold mb-5 text-[#522731]">We specialize exclusively on Zanzibar</h3>
+                    <p class="text-[15px]">
+                      Your journey through Zanzibar is shaped by the care and integrity of the tour operator you travel with. At Zanmodest, we thoughtfully
+                      arrange every detail — from selecting knowledgeable local guides and coordinating seamless transfers to partnering with halal-friendly
+                      hotels and managing all park entries — ensuring your experience is both spiritually mindful and effortlessly enjoyable
+                    </p>
+                    <a
+                      href="{{  route('pages.about')}}"
+                      class="flex items-center gap-3 bg-[#71414c] w-fit text-white text-center mt-5 text-md font-semibold px-8 py-2.5 rounded-md"
+                      >Reasons to choose Zanmodest
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.75"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-chevron-right-icon lucide-chevron-right"
+                      >
+                        <path d="m9 18 6-6-6-6" /></svg
+                    ></a>
+                  </div>
+
+                  <div class="flex flex-col p-4 h-[450px]">
+                    <img src="/images/ztc-logo.png" alt="" class="w-full h-full rounded-md object-cover" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            {{-- MENU LINK 4 --}}
+            <a
+              href="{{ route('pages.contact') }}"
+              class="sm:p-2 text-[#522731] font-semibold text-sm hover:text-gray-400 focus:outline-hidden focus:text-gray-400"
+              href="#"
+              >CONTACT US</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>

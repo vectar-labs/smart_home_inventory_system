@@ -246,6 +246,16 @@ def shopping_list():
         category_id = form.category_id.data or None
         unit_id = form.unit_id.data or None
         grocery_item_id = form.grocery_item_id.data or None
+        
+        # check if the item already exists in the shopping list for the user
+        existing_item = ShoppingListItem.query.filter_by(
+            grocery_item_id=grocery_item_id,
+            user_id=current_user.id
+        ).first()
+        if existing_item:
+            flash('Item already exists in shopping list', 'error')
+            return redirect(url_for('main.shopping_list'))
+        
 
         item = ShoppingListItem(
             grocery_item_id=grocery_item_id,
@@ -268,8 +278,13 @@ def shopping_list():
 @main.route('/shopping_list_item/<int:item_id>/delete', methods=['POST'])
 @login_required
 def delete_shopping_list_item(item_id):
-    item = ShoppingListItem.query.filter_by(id=item_id, user_id=current_user.id).first_or_404()
-    db.session.delete(item)
+    shopping_item = ShoppingListItem.query.filter_by(id=item_id, user_id=current_user.id).first_or_404()
+    grocery_item = GroceryItem.query.filter_by(id=shopping_item.grocery_item_id, user_id=current_user.id).first()
+    
+    if grocery_item:
+        grocery_item.quantity += shopping_item.quantity  # Restock the grocery item
+        
+    db.session.delete(shopping_item)
     db.session.commit()
     
     return redirect(url_for('main.shopping_list'))
