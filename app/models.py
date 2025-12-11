@@ -66,6 +66,10 @@ class ConsumptionLog(db.Model):
     date = db.Column(db.Date, nullable=False)
     qty_used = db.Column(db.Float, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
+    grocery_item = db.relationship('GroceryItem', backref='consumption_logs', lazy='joined')
+    user = db.relationship('User', backref='consumption_logs', lazy='joined')
+    
 
 
 class ShoppingListItem(db.Model):

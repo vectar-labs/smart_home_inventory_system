@@ -55,7 +55,14 @@ class EditGroceryItemForm(FlaskForm):
 class ConsumptionLogForm(FlaskForm):
     grocery_item_id = SelectField('Grocery Item', coerce=int)
     date = DateField('Date Used', format='%Y-%m-%d', default=datetime.date.today())
-    qty_used = FloatField('Quantity Used', validators=[DataRequired(), NumberRange(min=0.01)])
+    qty_used = FloatField('Quantity', 
+                         validators=[DataRequired(), NumberRange(min=0)],
+                         render_kw={
+                             'type': 'number',
+                             'step': '1',
+                             'min': '0',
+                             'placeholder': '0'
+                         })
     submit = SubmitField('Log Usage')
     
     def validate_qty_used(self, field):

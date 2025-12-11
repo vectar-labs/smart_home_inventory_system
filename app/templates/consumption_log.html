@@ -7,7 +7,10 @@
       <p class="text-sm text-slate-600 mt-2">Monitor and log grocery item usage</p>
     </div>
     <div class="flex items-center space-x-4">
-      <a class="flex items-center gap-2 text-sm text-gray-500 border border-gray-300 px-4 py-2 rounded-md cursor-pointer">
+      <a
+        href="{{ url_for('main.download_consumption_excel') }}"
+        class="flex items-center gap-2 text-sm text-gray-500 border border-gray-300 px-4 py-2 rounded-md cursor-pointer"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="18"
@@ -54,7 +57,7 @@
       <div class="p-6 rounded-md flex items-center justify-between">
         <div>
           <h3 class="text-md font-medium text-gray-600">Total Consumed Items</h3>
-          <p class="text-lg font-semibold text-gray-700/50 mt-2">75</p>
+          <p class="text-lg font-semibold text-gray-700/50 mt-2">{{logs_count}}</p>
         </div>
         <div>
           <svg
@@ -81,7 +84,7 @@
       <div class="p-6 rounded-md flex items-center justify-between">
         <div>
           <h3 class="text-md font-medium text-gray-600">This Week</h3>
-          <p class="text-lg font-semibold text-gray-700/50 mt-2">5</p>
+          <p class="text-lg font-semibold text-gray-700/50 mt-2">{{weekly_count}}</p>
         </div>
         <div>
           <svg
@@ -225,195 +228,42 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
-                <tr class="hover:bg-gray-100 dark:hover:bg-neutral-700">
-                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200 flex items-center gap-2">
+                {% for log in logs %}
+                <tr>
+                  <td class="px-6 py-4 text-sm font-medium text-gray-600 whitespace-nowrap flex items-center gap-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
+                      width="18"
+                      height="18"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="1.5"
+                      stroke-width="2"
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      class="lucide lucide-calendar-icon lucide-calendar text-gray-400"
+                      class="lucide lucide-calendar-icon lucide-calendar"
                     >
                       <path d="M8 2v4" />
                       <path d="M16 2v4" />
                       <rect width="18" height="18" x="3" y="4" rx="2" />
                       <path d="M3 10h18" /></svg
-                    >12/4/2025
+                    >{{ log.date.strftime('%d / %m / %Y') }}
                   </td>
-                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Bread</td>
-                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Bakery</td>
-                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">0.5 loaf</td>
-                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Admin User</td>
-                  <td class="px-6 py-3 text-sm font-medium flex items-center justify-end space-x-5">
-                    <a href="{{url_for('main.edit_consumption')}}" class="text-sm text-green-600 font-medium flex items-center rounded-md">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="lucide lucide-pencil-icon lucide-pencil"
-                      >
-                        <path
-                          d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
-                        />
-                        <path d="m15 5 4 4" /></svg
-                    ></a>
-                    <a href="#" class="text-sm text-red-600 font-medium flex items-center gap-2 rounded-md">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="lucide lucide-trash-icon lucide-trash"
-                      >
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                        <path d="M3 6h18" />
-                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                      </svg>
-                    </a>
+                  <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">{{ log.grocery_item.name if log.grocery_item else 'Unknown item' }}</td>
+                  <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
+                    {{ log.grocery_item.category.name if log.grocery_item and log.grocery_item.category else 'Uncategorized' }}
+                  </td>
+                  <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">{{ log.qty_used }}</td>
+                  <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">{{ log.user.username if log.user else 'Unknown user' }}</td>
+                  <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
+                    <a href="#" class="text-red-600 hover:text-red-800">Delete</a>
                   </td>
                 </tr>
-                <tr class="hover:bg-gray-100 dark:hover:bg-neutral-700">
-                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200 flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-calendar-icon lucide-calendar text-gray-400"
-                    >
-                      <path d="M8 2v4" />
-                      <path d="M16 2v4" />
-                      <rect width="18" height="18" x="3" y="4" rx="2" />
-                      <path d="M3 10h18" /></svg
-                    >12/4/2025
-                  </td>
-                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Bread</td>
-                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Bakery</td>
-                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">0.5 loaf</td>
-                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Admin User</td>
-                  <td class="px-6 py-3 text-sm font-medium flex items-center justify-end space-x-5">
-                    <a href="{{url_for('main.edit_consumption')}}" class="text-sm text-green-600 font-medium flex items-center rounded-md">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="lucide lucide-pencil-icon lucide-pencil"
-                      >
-                        <path
-                          d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
-                        />
-                        <path d="m15 5 4 4" /></svg
-                    ></a>
-                    <a href="#" class="text-sm text-red-600 font-medium flex items-center gap-2 rounded-md">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="lucide lucide-trash-icon lucide-trash"
-                      >
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                        <path d="M3 6h18" />
-                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                      </svg>
-                    </a>
-                  </td>
+                {% else %}
+                <tr>
+                  <td colspan="6" class="px-6 py-4 text-sm text-gray-700 text-center">No consumption logs found.</td>
                 </tr>
-                <tr class="hover:bg-gray-100 dark:hover:bg-neutral-700">
-                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200 flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-calendar-icon lucide-calendar text-gray-400"
-                    >
-                      <path d="M8 2v4" />
-                      <path d="M16 2v4" />
-                      <rect width="18" height="18" x="3" y="4" rx="2" />
-                      <path d="M3 10h18" /></svg
-                    >12/4/2025
-                  </td>
-                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Bread</td>
-                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Bakery</td>
-                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">0.5 loaf</td>
-                  <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">Admin User</td>
-                  <td class="px-6 py-3 text-sm font-medium flex items-center justify-end space-x-5">
-                    <a href="{{url_for('main.edit_consumption')}}" class="text-sm text-green-600 font-medium flex items-center rounded-md">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="lucide lucide-pencil-icon lucide-pencil"
-                      >
-                        <path
-                          d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
-                        />
-                        <path d="m15 5 4 4" /></svg
-                    ></a>
-                    <a href="#" class="text-sm text-red-600 font-medium flex items-center gap-2 rounded-md">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="lucide lucide-trash-icon lucide-trash"
-                      >
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                        <path d="M3 6h18" />
-                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                      </svg>
-                    </a>
-                  </td>
-                </tr>
+                {% endfor %}
               </tbody>
             </table>
           </div>
@@ -422,4 +272,4 @@
     </div>
   </div>
 </div>
-{% endblock %}
+{% endblock content%}

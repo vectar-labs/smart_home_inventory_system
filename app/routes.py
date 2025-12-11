@@ -1,4 +1,7 @@
 from datetime import date, timedelta
+from io import BytesIO
+import pandas as pd
+from flask import send_file
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug.security import generate_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
@@ -204,27 +207,137 @@ def delete_grocery(item_id):
     
     return redirect(url_for('main.inventory'))
 
-# shopping list Routes
-
 
 # consumption Routes
 
 @main.route('/consumption')
 @login_required
 def consumption():
-    return render_template('consumption_log.html', user=current_user)
+    logs = ConsumptionLog.query.filter_by(user_id=current_user.id).order_by(ConsumptionLog.date.desc()).all()
+    logs_count = ConsumptionLog.query.filter_by(user_id=current_user.id).count()
+    
+    # get weekly consumption count: last 7 days including today
+   
+    today = date.today()
+    week_start = today - timedelta(days=6)
 
-@main.route('/add_consumption')
+    weekly_count = (ConsumptionLog.query
+                    .filter_by(user_id=current_user.id)
+                    .filter(ConsumptionLog.date >= week_start)
+                    .filter(ConsumptionLog.date <= today)
+                    .count())
+     
+    
+    return render_template('consumption_log.html', user=current_user, logs=logs, logs_count=logs_count,weekly_count=weekly_count)
+
+@main.route('/add_consumption', methods=['GET', 'POST'])
 @login_required
 def add_consumption():
-    return render_template('add_consumption.html', user=current_user)
+    
+    form = ConsumptionLogForm()
+    # Set choices on every request
+    form.grocery_item_id.choices = [(0, 'Select Item')] + [
+        (i.id, i.name) for i in GroceryItem.query.filter_by(user_id=current_user.id).all()
+    ]
+    
+    if form.validate_on_submit():
+        grocery_item_id = form.grocery_item_id.data or None
+        
+        log = ConsumptionLog(
+            grocery_item_id=grocery_item_id,
+            date=form.date.data,
+            qty_used=form.qty_used.data,
+            user_id=current_user.id,
+        )
+        # Update grocery item quantity
+        grocery_item = GroceryItem.query.filter_by(id=grocery_item_id, user_id=current_user.id).first()
+        if grocery_item:
+            grocery_item.quantity -= form.qty_used.data
+            if grocery_item.quantity < 0:
+                grocery_item.quantity = 0  # Prevent negative stock
+        db.session.add(log)
+        db.session.commit()
+        flash('Consumption logged successfully', 'success')
+        return redirect(url_for('main.consumption'))
+    
+    return render_template('add_consumption.html', user=current_user, form=form)
 
-@main.route('/edit_consumption')
+@main.route('/edit_consumption', methods=['GET', 'POST'])
 @login_required
-def edit_consumption():
-    return render_template('edit_consumption.html', user=current_user)
+def edit_consumption(log_id):
+    form = EditConsumptionLogForm()
+    log = ConsumptionLog.query.get_or_404(log_id)
+    # Set choices on every request
+    form.grocery_item_id.choices = [(0, 'Select Item')] + [
+        (i.id, i.name) for i in GroceryItem.query.filter_by(user_id=current_user.id).all()
+    ]
+    if form.validate_on_submit():
+        previous_qty_used = log.qty_used
+        log.grocery_item_id = form.grocery_item_id.data
+        log.date = form.date.data
+        log.qty_used = form.qty_used.data
+        
+        # Update grocery item quantity based on change in qty_used
+        grocery_item = GroceryItem.query.filter_by(id=log.grocery_item_id, user_id=current_user.id).first()
+        if grocery_item:
+            qty_difference = form.qty_used.data - previous_qty_used
+            grocery_item.quantity -= qty_difference
+            if grocery_item.quantity < 0:
+                grocery_item.quantity = 0  # Prevent negative stock
+        
+        db.session.commit()
+        flash('Consumption log updated successfully', 'success')
+        return redirect(url_for('main.consumption'))
+    elif request.method == 'GET':
+        form.grocery_item_id.data = log.grocery_item_id
+        form.date.data = log.date
+        form.qty_used.data = log.qty_used
+        
+    return render_template('edit_consumption.html', user=current_user, form=form, log=log)
 
 
+# download consumption log as csv
+@main.route('/consumption/download', methods=['GET'])
+@login_required
+def download_consumption_excel():
+    # Get all logs for current user, optionally join grocery item names
+    logs = (ConsumptionLog.query
+            .filter_by(user_id=current_user.id)
+            .order_by(ConsumptionLog.date.desc())
+            .all())
+
+    # Build rows for DataFrame
+    data = []
+    for log in logs:
+        # If you defined a relationship: ConsumptionLog.grocery_item
+        item_name = log.grocery_item.name if hasattr(log, 'grocery_item') and log.grocery_item else ''
+        username = log.user.username if log.user else ''
+        data.append({
+            'Date': log.date,
+            'Item': item_name,
+            'Quantity Used': log.qty_used,
+            'User': username,
+        })
+
+    df = pd.DataFrame(data)
+
+    # Create Excel in memory
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df.to_excel(writer, index=False, sheet_name='Consumption')
+
+    output.seek(0)
+
+    filename = f"consumption_{current_user.username}_{date.today().isoformat()}.xlsx"
+
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name=filename,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
+    
+    
 # shopping list Routes
 @main.route('/shopping_list', methods=['GET', 'POST'])
 @login_required
