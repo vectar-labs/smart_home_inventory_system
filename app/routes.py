@@ -1,8 +1,9 @@
-from datetime import date, timedelta
+from datetime import date, timedelta,datetime
 from io import BytesIO
 import pandas as pd
 from flask import send_file
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from sqlalchemy import or_
 from werkzeug.security import generate_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from app.forms import RegistrationForm, LoginForm, GroceryItemForm, EditGroceryItemForm, ConsumptionLogForm, EditConsumptionLogForm, ShoppingListItemForm
@@ -213,23 +214,66 @@ def delete_grocery(item_id):
 @main.route('/consumption')
 @login_required
 def consumption():
-    logs = ConsumptionLog.query.filter_by(user_id=current_user.id).order_by(ConsumptionLog.date.desc()).all()
-    logs_count = ConsumptionLog.query.filter_by(user_id=current_user.id).count()
-    
-    # get weekly consumption count: last 7 days including today
-   
-    today = date.today()
-    week_start = today - timedelta(days=6)
+    search = request.args.get('q', '', type=str)              # text input
+    category_id = request.args.get('category_id', type=int)   # select: name="category_id"
+    period = request.args.get('period', '', type=str)         # select: name="period"
+    page = request.args.get('page', 1, type=int)
 
-    weekly_count = (ConsumptionLog.query
-                    .filter_by(user_id=current_user.id)
-                    .filter(ConsumptionLog.date >= week_start)
-                    .filter(ConsumptionLog.date <= today)
-                    .count())
-     
-    
-    return render_template('consumption_log.html', user=current_user, logs=logs, logs_count=logs_count,weekly_count=weekly_count)
+    # load categories from the Category table
+    categories = Category.query.order_by(Category.name.asc()).all()  # adjust field name if needed[web:49][web:51]
 
+    # base query
+    query = ConsumptionLog.query.filter_by(user_id=current_user.id)
+
+    # search filter by item name or user name
+    if search:
+        like_value = f"%{search}%"
+        query = query.filter(
+            or_(
+                ConsumptionLog.grocery_item.has(GroceryItem.name.ilike(like_value)),
+                ConsumptionLog.user.has(User.username.ilike(like_value))
+            )
+        )
+
+    # category filter (by id FK)
+    if category_id:
+        query = query.filter(
+            ConsumptionLog.grocery_item.has(GroceryItem.category_id == category_id)
+        )
+
+    # period filter
+    if period:
+        today = datetime.utcnow().date()
+        if period == 'today':
+            start = today
+        elif period == 'last7':
+            start = today - timedelta(days=6)
+        elif period == 'last30':
+            start = today - timedelta(days=29)
+        else:
+            start = None
+
+        if start:
+            query = query.filter(
+                ConsumptionLog.date >= start,
+                ConsumptionLog.date <= today)
+
+    query = query.order_by(ConsumptionLog.date.desc())
+    pagination = query.paginate(page=page, per_page=20, error_out=False)
+    logs = pagination.items
+
+    return render_template(
+        'consumption_log.html',
+        logs=logs,
+        pagination=pagination,
+        search=search,
+        category_id=category_id,
+        period=period,
+        categories=categories
+    )   
+    
+    
+    
 @main.route('/add_consumption', methods=['GET', 'POST'])
 @login_required
 def add_consumption():
@@ -257,7 +301,7 @@ def add_consumption():
                 grocery_item.quantity = 0  # Prevent negative stock
         db.session.add(log)
         db.session.commit()
-        flash('Consumption logged successfully', 'success')
+        
         return redirect(url_for('main.consumption'))
     
     return render_template('add_consumption.html', user=current_user, form=form)

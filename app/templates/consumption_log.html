@@ -157,56 +157,57 @@
 
     <!-- Filters panel -->
     <div class="w-full mt-4 gap-4">
-      <form class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div>
-          <input
-            type="text"
-            placeholder="Search item or user..."
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
-          />
-        </div>
+      <form class="grid grid-cols-1 md:grid-cols-4 gap-4" method="get">
+  <!-- Search -->
+  <div>
+    <input
+      type="text"
+      name="q"
+      placeholder="Search item or user..."
+      value="{{ request.args.get('q', '') }}"
+      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+    />
+  </div>
 
-        <div>
-          <select
-            name="category"
-            id=""
-            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-xs"
-          >
-            <option value="other">All Categories</option>
+  <!-- Category -->
+  <div>
+    <select
+  name="category_id"
+  class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-xs"
+>
+  <option value="">All Categories</option>
+  {% for c in categories %}
+    <option value="{{ c.id }}" {% if category_id == c.id %}selected{% endif %}>
+      {{ c.name }}
+    </option>
+  {% endfor %}
+</select>
 
-            <option value="other">Diary</option>
+  </div>
 
-            <option value="other">Meat</option>
+  <!-- Period -->
+  <div>
+    <select
+      name="period"
+      class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-xs"
+    >
+      <option value="" {% if not period %}selected{% endif %}>All time</option>
+      <option value="today" {% if period == 'today' %}selected{% endif %}>Today</option>
+      <option value="last7" {% if period == 'last7' %}selected{% endif %}>Last 7 days</option>
+      <option value="last30" {% if period == 'last30' %}selected{% endif %}>Last 30 days</option>
+    </select>
+  </div>
 
-            <option value="other">Vegetables</option>
+  <!-- Submit -->
+  <div>
+    <input
+      type="submit"
+      value="Filter"
+      class="w-full px-4 py-2 rounded-lg focus:outline-none bg-green-400 text-sm font-medium text-white cursor-pointer"
+    />
+  </div>
+</form>
 
-            <option value="other">Fruits</option>
-          </select>
-        </div>
-
-        <div>
-          <select
-            name="category"
-            id=""
-            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-xs"
-          >
-            <option value="other">All <time></time></option>
-
-            <option value="other">Today</option>
-
-            <option value="other">Last 7 days</option>
-
-            <option value="other">Last 30 days</option>
-          </select>
-        </div>
-        <div>
-          <input
-            type="submit"
-            placeholder="Filter"
-            class="w-full px-4 py-2 rounded-lg focus:outline-none bg-green-400 text-sm font-medium text-white cursor-pointer"
-          />
-        </div>
-      </form>
     </div>
   </div>
 
@@ -256,7 +257,7 @@
                   <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">{{ log.qty_used }}</td>
                   <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">{{ log.user.username if log.user else 'Unknown user' }}</td>
                   <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-                    <a href="#" class="text-red-600 hover:text-red-800">Delete</a>
+                    <a href="#" class="text-red-600 hover:text-red-800">Remove</a>
                   </td>
                 </tr>
                 {% else %}
@@ -267,6 +268,53 @@
               </tbody>
             </table>
           </div>
+          <!-- Pagination -->
+          <ul class="flex items-center justify-center gap-1 mt-4 text-sm">
+            {# Prev button #} {% if pagination.has_prev %}
+            <li>
+              <a
+                href="{{ url_for('main.consumption', page=pagination.prev_num) }}"
+                class="inline-flex items-center px-3 py-1.5 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+              >
+                Prev
+              </a>
+            </li>
+            {% else %}
+            <li>
+              <span class="inline-flex items-center px-3 py-1.5 rounded-md border border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed"> Prev </span>
+            </li>
+            {% endif %} {# Page numbers #} {% for p in pagination.iter_pages() %} {% if p %} {% if p == pagination.page %}
+            <li>
+              <span class="inline-flex items-center px-3 py-1.5 rounded-md border border-green-500 bg-green-500 text-white"> {{ p }} </span>
+            </li>
+            {% else %}
+            <li>
+              <a
+                href="{{ url_for('main.consumption', page=p) }}"
+                class="inline-flex items-center px-3 py-1.5 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+              >
+                {{ p }}
+              </a>
+            </li>
+            {% endif %} {% else %}
+            <li>
+              <span class="inline-flex items-center px-2 py-1 text-gray-400">…</span>
+            </li>
+            {% endif %} {% endfor %} {# Next button #} {% if pagination.has_next %}
+            <li>
+              <a
+                href="{{ url_for('main.consumption', page=pagination.next_num) }}"
+                class="inline-flex items-center px-3 py-1.5 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+              >
+                Next
+              </a>
+            </li>
+            {% else %}
+            <li>
+              <span class="inline-flex items-center px-3 py-1.5 rounded-md border border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed"> Next </span>
+            </li>
+            {% endif %}
+          </ul>
         </div>
       </div>
     </div>
