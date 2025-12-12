@@ -261,10 +261,25 @@ def consumption():
     query = query.order_by(ConsumptionLog.date.desc())
     pagination = query.paginate(page=page, per_page=20, error_out=False)
     logs = pagination.items
+    
+    query = query.order_by(ConsumptionLog.date.desc())
+
+    total_logs_count = query.count()
+    
+    # weekly count 
+    
+    today = datetime.utcnow().date()
+    week_start = today - timedelta(days=6)
+
+    weekly_logs_count = ConsumptionLog.query.filter_by(user_id=current_user.id).filter(
+    ConsumptionLog.date >= week_start,
+    ConsumptionLog.date <= today).count()
 
     return render_template(
         'consumption_log.html',
+        logs_count = total_logs_count,
         logs=logs,
+        weekly_logs_count=weekly_logs_count,
         pagination=pagination,
         search=search,
         category_id=category_id,
