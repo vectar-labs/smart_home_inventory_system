@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% block content %}
 <div class="w-full">
   <!-- Top header -->
-  <div class="flex items-center justify-between p-4 bg-white rounded-md border border-gray-100">
+  <div class="flex items-center justify-between px-4">
     <div>
       <h2 class="text-xl font-semibold text-gray-700">Dashboard</h2>
       <p class="text-sm text-slate-600 mt-2">Welcome to your dashboard! Here you can manage your home inventory.</p>
@@ -30,8 +30,8 @@
   </div>
   <!-- Statistics section -->
   <div>
-    <div class="mt-5 grid grid-cols-1 md:grid-cols-4 gap-6 p-4 bg-white rounded-md border border-gray-100">
-      <div class="px-6 py-3 flex items-center justify-between bg-blue-50 rounded-md">
+    <div class="mt-5 grid grid-cols-1 md:grid-cols-4 gap-6 p-4">
+      <div class="col-span-1 bg-white border border-gray-200 rounded-md p-4 flex items-center justify-between">
         <div>
           <h3 class="text-md font-medium text-indigo-500">Total Items</h3>
           <p class="text-lg font-semibold text-indigo-800 mt-2">{{total_items}}</p>
@@ -56,7 +56,7 @@
           </svg>
         </div>
       </div>
-      <div class="px-6 py-3 flex items-center justify-between bg-amber-50 rounded-md">
+      <div class="col-span-1 bg-white border border-gray-200 rounded-md p-4 flex items-center justify-between">
         <div>
           <h3 class="text-md font-medium text-amber-700">Expiring Soon</h3>
           <p class="text-lg font-semibold text-amber-800 mt-2">{% if expiring_soon_count > 0 %} {{ expiring_soon_count }} {% else %} 0 {% endif %}</p>
@@ -81,7 +81,7 @@
           </svg>
         </div>
       </div>
-      <div class="px-6 py-3 flex items-center justify-between bg-rose-50 rounded-md">
+      <div class="col-span-1 bg-white border border-gray-200 rounded-md p-4 flex items-center justify-between">
         <div>
           <h3 class="text-md font-medium text-rose-700">Expired</h3>
           <p class="text-lg font-semibold text-rose-900 mt-2">{{expired_items_count}}</p>
@@ -105,7 +105,7 @@
           </svg>
         </div>
       </div>
-      <div class="px-6 py-3 flex items-center justify-between bg-violet-50 rounded-md">
+      <div class="col-span-1 bg-white border border-gray-200 rounded-md p-4 flex items-center justify-between">
         <div>
           <h3 class="text-md font-medium text-violet-700">Low Stock</h3>
           <p class="text-lg font-semibold text-violet-900 mt-2">{{low_stock_count}}</p>
@@ -131,8 +131,8 @@
     </div>
   </div>
   <!-- recent activities -->
-  <div class="grid grid-cols-12 gap-6 mt-5 p-4 bg-white rounded-md border border-gray-100">
-    <div class="col-span-6 border-2 border-gray-100 px-6 py-4 rounded-md">
+  <div class="grid grid-cols-12 gap-6 mt-2 p-4">
+    <div class="col-span-6 bg-white border border-gray-200 rounded-md p-4">
       <div class="flex justify-between items-center border-b border-gray-200 pb-3">
         <h3 class="text-sm text-gray-700 font-medium">Expiring Soon</h3>
         <div>
@@ -201,7 +201,7 @@
         </div>
       </div>
     </div>
-    <div class="col-span-6 border-2 border-gray-100 px-6 py-4 rounded-md">
+    <div class="col-span-6 bg-white border border-gray-200 rounded-md p-4">
       <div class="flex justify-between items-center border-b border-gray-200 pb-3">
         <h3 class="text-sm text-gray-700 font-medium">Low Stock Items</h3>
         <div>
@@ -274,11 +274,13 @@
     </div>
   </div>
   <!-- Tips -->
-  <div class="px-6 py-4 rounded-md bg-green-100 mt-6">
-    <h3 class="text-sm text-gray-700 font-medium mb-2">Quick Tip</h3>
-    <p class="text-sm font-regular text-gray-600">
-      You have {{expiring_soon_count}} items expiring within 3 days. Consider using them or add them to your meal plan today.
-    </p>
+  <div class="px-4">
+    <div class="px-6 p-4 rounded-md bg-green-100 mt-6">
+      <h3 class="text-sm text-gray-700 font-medium mb-2">Quick Tip</h3>
+      <p class="text-sm font-regular text-gray-600">
+        You have {{expiring_soon_count}} items expiring within 3 days. Consider using them or add them to your meal plan today.
+      </p>
+    </div>
   </div>
 </div>
 {% endblock %}

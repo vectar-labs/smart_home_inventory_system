@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% block content %}
 <div class="w-full">
   <!-- Top header -->
-  <div class="flex items-center justify-between p-4 bg-white rounded-md border border-gray-100">
+  <div class="flex items-center justify-between">
     <div>
       <h2 class="text-xl font-semibold text-gray-700">Inventory</h2>
       <p class="text-sm text-slate-600 mt-2">Manage your inventory items here.</p>
@@ -29,7 +29,7 @@
   </div>
   <!-- Filters -->
   
-  <form method="GET" action="{{ url_for('main.inventory') }}" class="w-full border border-gray-100 mt-5 p-4 bg-white rounded-md" x-data="{ showFilters: false }">
+  <form method="GET" action="{{ url_for('main.inventory') }}" class="w-full border border-gray-300 mt-6 p-4  rounded-md" x-data="{ showFilters: false }">
   <div class="flex items-center justify-between gap-4">
     <!-- Search input -->
     <div class="flex-grow flex items-center gap-4">
@@ -130,7 +130,7 @@
 
   <!-- Inventory Table -->
   <div class="mt-6 overflow-x-auto">
-    <div class="w-full grid grid-cols-4 gap-4">
+    <div class="w-full grid grid-cols-3 gap-4">
       {% for item in grocery_items %}
       <!-- Item card -->
       <div class="p-3 rounded-md border border-gray-200 bg-white">
@@ -213,7 +213,30 @@
               {% endif %}
             </div>
             <div class="flex items-center gap-3">
-              <a
+              {% if item.expiry_date < today %}
+              <form action="{{url_for('main.delete_grocery', item_id=item.id)}}" method="POST">
+              <button type="submit" class="text-sm text-red-600 font-medium flex items-center py-1 px-3 gap-2 rounded-md hover:bg-red-100/50">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-trash-icon lucide-trash"
+                >
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                  <path d="M3 6h18" />
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+              </button>
+            </form>
+          
+              {% else%}
+                <a
               href="{{url_for('main.edit_item', item_id=item.id)}}"
               class="text-sm text-green-600 font-medium flex items-center py-1 px-3 gap-2 rounded-md hover:bg-green-100/50"
             >
@@ -253,7 +276,11 @@
                   <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                 </svg>
               </button>
-            </form></div>
+            </form>
+              {% endif %}
+            
+          
+          </div>
           </div>
         </div>
       </div>

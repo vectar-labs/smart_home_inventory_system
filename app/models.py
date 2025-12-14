@@ -59,15 +59,19 @@ class GroceryItem(db.Model):
     category = db.relationship('Category', backref='grocery_items', lazy='joined')
     location = db.relationship('Location', backref='grocery_items', lazy='joined')
     unit = db.relationship('Units', backref='grocery_items', lazy='joined')
+    consumption_logs = db.relationship(
+        "ConsumptionLog",
+        backref="grocery_item",
+        passive_deletes=True,)
 
 class ConsumptionLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    grocery_item_id = db.Column(db.Integer, db.ForeignKey('grocery_item.id'), nullable=False)
+    grocery_item_id = db.Column(db.Integer, db.ForeignKey('grocery_item.id', ondelete="SET NULL"), nullable=True)
+    item_name =  db.Column(db.String(120), nullable=True)
+    item_category =  db.Column(db.String(120), nullable=True)
     date = db.Column(db.Date, nullable=False)
     qty_used = db.Column(db.Float, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    
-    grocery_item = db.relationship('GroceryItem', backref='consumption_logs', lazy='joined')
     user = db.relationship('User', backref='consumption_logs', lazy='joined')
     
 
@@ -83,3 +87,13 @@ class ShoppingListItem(db.Model):
     user = db.relationship('User', backref='shopping_list_items', lazy='joined')
     unit = db.relationship('Units', backref='shopping_list_items', lazy='joined')
     grocery_item = db.relationship('GroceryItem', backref='shopping_list_items', lazy='joined')
+
+
+class FoodWasted(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    item_name = db.Column(db.String(120), nullable=False)
+    quantity = db.Column(db.Float, nullable=False)
+    expiry_date = db.Column(db.Date, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref='food_wasted', lazy='joined')
+    

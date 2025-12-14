@@ -3,14 +3,16 @@ from io import BytesIO
 import pandas as pd
 from flask import send_file
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 from werkzeug.security import generate_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from app.forms import RegistrationForm, LoginForm, GroceryItemForm, EditGroceryItemForm, ConsumptionLogForm, EditConsumptionLogForm, ShoppingListItemForm
-from app.models import User, Location, Category, GroceryItem, Units, ConsumptionLog, ShoppingListItem
+from app.models import User, Location, Category, GroceryItem, Units, ConsumptionLog, ShoppingListItem,FoodWasted
 from app import db
 
 main = Blueprint('main', __name__)
+
+
 
 # Authentication Routes
 
@@ -84,6 +86,7 @@ def dashboard():
 @main.route('/inventory')
 @login_required
 def inventory():
+
     search = request.args.get('search', '').strip()
     category_id = request.args.get('category_id', type=int)
     location_id = request.args.get('location_id', type=int)
@@ -203,6 +206,18 @@ def edit_item(item_id):
 @login_required
 def delete_grocery(item_id):
     item = GroceryItem.query.filter_by(id=item_id, user_id=current_user.id).first_or_404()
+    
+    
+    # save the item into FoodWaste Model
+    wasted_food_item = FoodWasted(
+        item_name= item.name,
+         quantity= item.quantity,
+         expiry_date= item.expiry_date,
+         user_id=current_user.id
+    )
+    
+    db.session.add(wasted_food_item)
+       
     db.session.delete(item)
     db.session.commit()
     
@@ -215,12 +230,13 @@ def delete_grocery(item_id):
 @login_required
 def consumption():
     search = request.args.get('q', '', type=str)              # text input
-    category_id = request.args.get('category_id', type=int)   # select: name="category_id"
+    item_category = request.args.get('item_category', '', type=str)              # text input
+    # category_id = request.args.get('category_id', type=int)   # select: name="category_id"
     period = request.args.get('period', '', type=str)         # select: name="period"
     page = request.args.get('page', 1, type=int)
 
     # load categories from the Category table
-    categories = Category.query.order_by(Category.name.asc()).all()  # adjust field name if needed[web:49][web:51]
+    categories = Category.query.order_by(Category.name.asc()).all()  
 
     # base query
     query = ConsumptionLog.query.filter_by(user_id=current_user.id)
@@ -230,16 +246,19 @@ def consumption():
         like_value = f"%{search}%"
         query = query.filter(
             or_(
-                ConsumptionLog.grocery_item.has(GroceryItem.name.ilike(like_value)),
+                ConsumptionLog.item_name.ilike(like_value),
                 ConsumptionLog.user.has(User.username.ilike(like_value))
             )
         )
 
     # category filter (by id FK)
-    if category_id:
-        query = query.filter(
-            ConsumptionLog.grocery_item.has(GroceryItem.category_id == category_id)
-        )
+    # if category_id:
+    #     query = query.filter(
+    #         ConsumptionLog.grocery_item.has(GroceryItem.category_id == category_id)
+    #     )
+    if item_category:
+        query = query.filter(ConsumptionLog.item_category == item_category)
+   
 
     # period filter
     if period:
@@ -282,7 +301,7 @@ def consumption():
         weekly_logs_count=weekly_logs_count,
         pagination=pagination,
         search=search,
-        category_id=category_id,
+        # category_id=category_id,
         period=period,
         categories=categories
     )   
@@ -292,24 +311,29 @@ def consumption():
 @main.route('/add_consumption', methods=['GET', 'POST'])
 @login_required
 def add_consumption():
+    today = date.today()
     
     form = ConsumptionLogForm()
     # Set choices on every request
     form.grocery_item_id.choices = [(0, 'Select Item')] + [
-        (i.id, i.name) for i in GroceryItem.query.filter_by(user_id=current_user.id).all()
+        (i.id, i.name) for i in GroceryItem.query.filter_by(user_id=current_user.id).filter(GroceryItem.expiry_date >= today).all()
     ]
     
     if form.validate_on_submit():
         grocery_item_id = form.grocery_item_id.data or None
         
+        grocery_item = GroceryItem.query.filter_by(id=grocery_item_id, user_id=current_user.id).first()
+        
         log = ConsumptionLog(
             grocery_item_id=grocery_item_id,
+            item_name = grocery_item.name,
+            item_category = grocery_item.category.name,
             date=form.date.data,
             qty_used=form.qty_used.data,
             user_id=current_user.id,
         )
         # Update grocery item quantity
-        grocery_item = GroceryItem.query.filter_by(id=grocery_item_id, user_id=current_user.id).first()
+        grocery_item = GroceryItem.query.filter_by(id=grocery_item_id, user_id=current_user.id).filter(GroceryItem.expiry_date >= today).first()
         if grocery_item:
             grocery_item.quantity -= form.qty_used.data
             if grocery_item.quantity < 0:
@@ -369,7 +393,7 @@ def download_consumption_excel():
     data = []
     for log in logs:
         # If you defined a relationship: ConsumptionLog.grocery_item
-        item_name = log.grocery_item.name if hasattr(log, 'grocery_item') and log.grocery_item else ''
+        item_name = log.item_name
         username = log.user.username if log.user else ''
         data.append({
             'Date': log.date,
@@ -460,3 +484,123 @@ def delete_shopping_list_item(item_id):
     db.session.commit()
     
     return redirect(url_for('main.shopping_list'))
+
+
+# Analytics Routes
+
+@main.route('/analytics')
+@login_required
+def analytics():
+    today = date.today()
+    limit = today + timedelta(days=3)
+    
+    
+
+    total_quantity = (
+    db.session.query(func.sum(GroceryItem.quantity))
+    .filter_by(user_id=current_user.id)
+    .scalar()) or 0
+
+# handle None when there are no rows
+    total_quantity = int(total_quantity)
+
+    # expired_items_count = GroceryItem.query.filter_by(user_id=current_user.id).filter(GroceryItem.expiry_date != None).filter(GroceryItem.expiry_date < today).count()
+    total_wasted_food  = (
+    db.session.query(func.sum( FoodWasted.quantity))
+    .filter_by(user_id=current_user.id).scalar()) or 0
+    
+    total_wasted_food = int(total_wasted_food)
+    
+    # items_consumed_count = ConsumptionLog.query.filter_by(user_id=current_user.id).count()
+    total_consummed_quantity = (
+    db.session.query(func.sum(ConsumptionLog.qty_used))
+    .filter_by(user_id=current_user.id)
+    .scalar()) or 0
+    
+    total_consummed_quantity = int(total_consummed_quantity)
+
+    items_tracked = total_quantity - total_wasted_food
+
+    if total_quantity  > 0 and items_tracked > 0:
+      fresh_items_percentage = round((items_tracked / total_quantity) * 100, 1)
+    else:
+      fresh_items_percentage = 0.0
+      
+    if total_consummed_quantity > 0 and total_quantity  > 0 :
+       percentage_consumed = round(( total_consummed_quantity/ total_quantity) * 100, 1)
+    else:
+        percentage_consumed = 0
+        
+    if total_wasted_food > 0 and total_quantity  > 0:
+       percentage_expired = round(( total_wasted_food/ total_quantity) * 100, 1)
+    else:
+        percentage_expired = 0
+     
+     
+    #  generate the consummed vs wated line graph
+    
+    year = date.today().year
+
+    # 1) total items consumed per month (from ConsumptionLog)
+    consumed_rows = (
+        db.session.query(
+            func.extract("month", ConsumptionLog.date).label("m"),
+            func.sum(ConsumptionLog.qty_used).label("total_qty"),
+        )
+        .filter(
+            ConsumptionLog.user_id == current_user.id,
+            func.extract("year", ConsumptionLog.date) == year,
+        )
+        .group_by("m")
+        .order_by("m")
+        .all()
+    )
+
+    total_per_month = [0] * 12
+    for m, total in consumed_rows:
+        total_per_month[int(m) - 1] = float(total or 0)
+
+    # 2) wasted items per month (from FoodWasted)
+    wasted_rows = (
+        db.session.query(
+            func.extract("month", FoodWasted.expiry_date).label("m"),
+            func.sum(FoodWasted.quantity).label("wasted_qty"),
+        )
+        .filter(
+            FoodWasted.user_id == current_user.id,
+            FoodWasted.expiry_date.isnot(None),
+            func.extract("year", FoodWasted.expiry_date) == year,
+        )
+        .group_by("m")
+        .order_by("m")
+        .all()
+    )
+
+    wasted_per_month = [0] * 12
+    for m, wasted in wasted_rows:
+        wasted_per_month[int(m) - 1] = float(wasted or 0)
+
+    
+    
+    #  generate the pie chart based on the categoies of the food items in th einventory
+    
+    # group by category and sum quantities
+    rows = (
+        db.session.query(
+            Category.name.label("category"),
+            func.sum(GroceryItem.quantity).label("total_qty"),
+        )
+        .join(GroceryItem, GroceryItem.category_id == Category.id)
+        .filter(GroceryItem.user_id == current_user.id)
+        .group_by(Category.name)
+        .order_by(Category.name)
+        .all()
+    )
+
+    labels = [r.category for r in rows]
+    data = [float(r.total_qty or 0) for r in rows]
+    
+    return render_template('analytics.html', user=current_user, items_tracked=total_quantity, fresh_items_percentage=fresh_items_percentage, items_consumed_count=total_consummed_quantity, food_wasted = total_wasted_food, percentage_consumed = percentage_consumed, percentage_expired=percentage_expired, current_year=year,
+        total_per_month=total_per_month,
+        wasted_per_month=wasted_per_month,category_labels=labels,
+        category_data=data,)

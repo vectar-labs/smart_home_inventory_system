@@ -1,0 +1,229 @@
+{% extends 'base.html' %} {% block content %}
+<div class="w-full">
+  <!-- Top header -->
+  <div class="flex items-center justify-between px-4 pb-4">
+    <div>
+      <h2 class="text-xl font-semibold text-gray-700">Analytics Dashboard</h2>
+      <p class="text-sm text-slate-600 mt-2">Track your inventory usage, waste, and consumption patterns</p>
+    </div>
+  </div>
+  <!-- statistics -->
+  <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
+    <!-- card -->
+    <div class="col-span-1 bg-white border border-gray-200 rounded-md p-4">
+      <div class="flex item-center justify-between">
+        <span
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="26"
+            height="26"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-box-icon lucide-box text-blue-500"
+          >
+            <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+            <path d="m3.3 7 8.7 5 8.7-5" />
+            <path d="M12 22V12" /></svg></span
+        ><span class="text-sm text-green-500">+{{ '%.1f' % fresh_items_percentage }}%</span>
+      </div>
+      <div>
+        <h3 class="text-sm text-slate-600 mt-6">Total Items Tracked</h3>
+        <p class="text-lg font-semibold text-gray-700/50 mt-2">{{items_tracked}}</p>
+      </div>
+    </div>
+    <!-- card -->
+    <div class="col-span-1 bg-white border border-gray-200 rounded-md p-4">
+      <div class="flex item-center justify-between">
+        <span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="26"
+            height="26"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-trending-up-icon lucide-trending-up text-green-400"
+          >
+            <path d="M16 7h6v6" />
+            <path d="m22 7-8.5 8.5-5-5L2 17" /></svg></span
+        ><span class="text-sm text-green-500">+{{percentage_consumed}}%</span>
+      </div>
+      <div>
+        <h3 class="text-sm text-slate-600 mt-6">Items Consumed</h3>
+        <p class="text-lg font-semibold text-gray-700/50 mt-2">{{items_consumed_count}}</p>
+      </div>
+    </div>
+    <!-- card -->
+    <div class="col-span-1 bg-white border border-gray-200 rounded-md p-4">
+      <div class="flex item-center justify-between">
+        <span
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-trash2-icon lucide-trash-2 text-red-400"
+          >
+            <path d="M10 11v6" />
+            <path d="M14 11v6" />
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+            <path d="M3 6h18" />
+            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg></span
+        ><span class="text-sm text-red-500">+{{percentage_expired}}%</span>
+      </div>
+      <div>
+        <h3 class="text-sm text-slate-600 mt-6">Food Waste</h3>
+        <p class="text-lg font-semibold text-gray-700/50 mt-2">{{food_wasted}}</p>
+      </div>
+    </div>
+    <!-- card -->
+    <!-- <div class="col-span-1 bg-white border border-gray-200 rounded-md p-4">
+      <div class="flex item-center justify-between">
+        <span
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="26"
+            height="26"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-trending-down-icon lucide-trending-down text-indigo-400"
+          >
+            <path d="M16 17h6v-6" />
+            <path d="m22 17-8.5-8.5-5 5L2 7" /></svg></span
+        ><span class="text-sm text-indigo-500">+12%</span>
+      </div>
+      <div>
+        <h3 class="text-sm text-slate-600 mt-6">Waste Reduction</h3>
+        <p class="text-lg font-semibold text-gray-700/50 mt-2">85%</p>
+      </div>
+    </div> -->
+    <!-- end of cards -->
+  </div>
+
+  <!-- Analytics graphs -->
+  <div class="overflow-x-auto mt-3 p-4">
+    <div class="grid grid-cols-2 gap-6">
+      <div class="col-span-1 bg-white border border-gray-200 rounded-md p-4">
+        <h3 class="text-md font-semibold text-gray-700 mb-3">Inventory &amp; Waste Trends ({{ current_year }})</h3>
+        <div class="h-64">
+          <canvas id="inventory-waste-chart"></canvas>
+        </div>
+      </div>
+      <div class="col-span-1 bg-white border border-gray-200 rounded-md p-4">
+        <h3 class="text-md font-semibold text-gray-700 mb-3">Items by Category</h3>
+        <div class="h-64">
+          <canvas id="items-by-category-chart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Shared month labels
+  const monthLabels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  // Data from Flask
+  const totalData    = {{ total_per_month    | tojson }};
+  const wastedData   = {{ wasted_per_month   | tojson }};
+  const catLabels    = {{ category_labels    | tojson }};
+  const catData      = {{ category_data      | tojson }};
+
+  // 1) Inventory & Waste Trends (line chart)
+  const ctxLine = document.getElementById("inventory-waste-chart").getContext("2d");
+  new Chart(ctxLine, {
+    type: "line",
+    data: {
+      labels: monthLabels,
+      datasets: [
+        {
+          label: "Total Items",
+          data: totalData,
+          borderColor: "rgb(34,197,94)",
+          backgroundColor: "rgba(34,197,94,0.15)",
+          tension: 0.3,
+          fill: false,
+          pointRadius: 3,
+        },
+        {
+          label: "Wasted Items",
+          data: wastedData,
+          borderColor: "rgb(248,113,113)",
+          backgroundColor: "rgba(248,113,113,0.2)",
+          tension: 0.3,
+          fill: false,
+          pointRadius: 3,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: "bottom", labels: { usePointStyle: true } },
+        tooltip: { mode: "index", intersect: false }
+      },
+      scales: {
+        x: { grid: { display: false }, title: { display: true, text: "Month" } },
+        y: { beginAtZero: true, title: { display: true, text: "Items" } }
+      }
+    }
+  });
+
+  // 2) Items by Category (pie chart)
+  const ctxPie = document.getElementById("items-by-category-chart").getContext("2d");
+  new Chart(ctxPie, {
+    type: "pie",
+    data: {
+      labels: catLabels,
+      datasets: [{
+        data: catData,
+        backgroundColor: [
+          "#22c55e",
+          "#3b82f6",
+          "#f97316",
+          "#ec4899",
+          "#a855f7",
+          "#eab308",
+        ],
+        borderColor: "#ffffff",
+        borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: "right", labels: { usePointStyle: true } },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              const label = context.label || "";
+              const value = context.parsed || 0;
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const pct = total ? ((value / total) * 100).toFixed(0) : 0;
+              return `${label}: ${value} (${pct}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
+</script>
+{% endblock content%}

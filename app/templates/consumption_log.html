@@ -172,12 +172,12 @@
   <!-- Category -->
   <div>
     <select
-  name="category_id"
+  name="item_category"
   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-xs"
 >
   <option value="">All Categories</option>
   {% for c in categories %}
-    <option value="{{ c.id }}" {% if category_id == c.id %}selected{% endif %}>
+    <option value="{{ c.name }}" {% if category_id == c.id %}selected{% endif %}>
       {{ c.name }}
     </option>
   {% endfor %}
@@ -250,9 +250,9 @@
                       <path d="M3 10h18" /></svg
                     >{{ log.date.strftime('%d / %m / %Y') }}
                   </td>
-                  <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">{{ log.grocery_item.name if log.grocery_item else 'Unknown item' }}</td>
+                  <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">{{ log.grocery_item.name if log.grocery_item else log.item_name }}</td>
                   <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
-                    {{ log.grocery_item.category.name if log.grocery_item and log.grocery_item.category else 'Uncategorized' }}
+                    {{ log.grocery_item.category.name if log.grocery_item and log.grocery_item.category else log.item_category }}
                   </td>
                   <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">{{ log.qty_used }}</td>
                   <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">{{ log.user.username if log.user else 'Unknown user' }}</td>
