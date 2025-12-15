@@ -1,5 +1,7 @@
 import os
 from datetime import timedelta
+
+from flask import app
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
@@ -10,3 +12,6 @@ class Config:
         "postgresql://postgres:kitindi@localhost/grocery_db"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    
+   
+    

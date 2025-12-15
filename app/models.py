@@ -8,9 +8,15 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(120), nullable=False, unique=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(50), default="member")
+    role = db.Column(db.String(50), default="Member")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     grocery_items = db.relationship('GroceryItem', backref='owner', lazy=True)
+    profile = db.relationship(
+        "Profile",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
     
     
     @staticmethod
@@ -97,3 +103,13 @@ class FoodWasted(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref='food_wasted', lazy='joined')
     
+    
+class Profile(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    full_name = db.Column(db.String(120), nullable=True)
+    phone_number = db.Column(db.String(30), nullable=True)
+    role = db.Column(db.String(50))
+    avatar_url = db.Column(db.String(255))  # path under /static
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), unique=True, nullable=False)
+
+    user = db.relationship("User", back_populates="profile")

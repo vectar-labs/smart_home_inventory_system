@@ -171,7 +171,11 @@
               Meal Plans
             </a> -->
 
-            <a class="flex items-center gap-x-3.5 p-2 text-sm text-gray-800 bg-white hover:bg-green-100/50 focus:bg-green-100/50 group" href="#">
+            <a
+              href="{{url_for('main.setting')}}"
+              class="flex items-center gap-x-3.5 p-2 text-sm text-gray-800 bg-white hover:bg-green-100/50 focus:bg-green-100/50 group"
+              href="#"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="18"
@@ -195,27 +199,35 @@
         </div>
         <div class="flex-grow flex items-end justify-start pb-8">
           <div class="border-t-2 border-gray-200 pt-4 px-6 w-full">
-            <a href="#" class="flex gap-2"
-              ><div class="w-10 h-10 rounded-full bg-green-100 flex justify-center items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-user-icon lucide-user text-slate-700"
-                >
-                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
+            <a href="{{url_for('main.setting')}}" class="flex items-center gap-2">
+              <div class="">
+                {% if current_user.profile.avatar_url %}
+                <img src="{{ url_for('static', filename=current_user.profile.avatar_url) }}" class="w-13 h-13 rounded-full object-cover" alt="Profile photo" />
+                {% else %}
+                <div class="w-13 h-13 rounded-full bg-green-100 flex items-center justify-center text-gray-600">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-user-round-icon lucide-user-round text-500"
+                  >
+                    <circle cx="12" cy="8" r="5" />
+                    <path d="M20 21a8 8 0 0 0-16 0" />
+                  </svg>
+                </div>
+                {% endif %}
               </div>
               <div class="space-y-1">
-                <p class="text-xs font-medium">{{current_user.username}}</p>
-                <p class="text-xs pb-3">{{current_user.role}}</p>
+                <p class="text-xs font-medium">
+                  {% if current_user.profile.full_name%} {{current_user.profile.full_name}} {% else %} {{current_user.username}} {% endif %}
+                </p>
+                <p class="text-xs pb-3">{% if current_user.profile.role%} {{current_user.profile.role}} {% else %} {{current_user.role}} {% endif %}</p>
               </div></a
             >
           </div>

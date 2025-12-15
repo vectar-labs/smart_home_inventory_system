@@ -1,0 +1,60 @@
+{% extends 'setting_base.html' %} {% block profile %}
+<div class="">
+  <h1 class="text-sm text-slate-700">Profile Information</h1>
+  <div class="pt-8">
+    <form method="post" enctype="multipart/form-data" action="{{url_for('main.setting')}}">
+      {{ form.hidden_tag() }}
+
+      <div class="flex items-center gap-4">
+        {% if current_user.profile.avatar_url %}
+        <img src="{{ url_for('static', filename=current_user.profile.avatar_url) }}" class="w-16 h-16 rounded-full object-cover" alt="Profile photo" />
+        {% else %}
+        <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-gray-600">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-user-round-icon lucide-user-round text-500"
+          >
+            <circle cx="12" cy="8" r="5" />
+            <path d="M20 21a8 8 0 0 0-16 0" />
+          </svg>
+        </div>
+        {% endif %}
+
+        <label class="inline-flex items-center px-4 py-2 border rounded-lg text-sm cursor-pointer bg-white hover:bg-gray-50">
+          {{ form.avatar(class="hidden") }}
+          <span>Change Photo</span>
+        </label>
+      </div>
+
+      <!-- rest of your fields ... -->
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Full Name</label>
+          {{ form.full_name(class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm") }}
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Phone Number</label>
+          {{ form.phone_number(class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm") }}
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Role</label>
+          {{ form.role(class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm") }}
+        </div>
+      </div>
+
+      {{ form.submit(class="mt-6 px-5 py-2 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600") }}
+    </form>
+  </div>
+</div>
+{% endblock profile %}

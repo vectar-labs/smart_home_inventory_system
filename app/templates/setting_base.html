@@ -1,0 +1,63 @@
+{% extends 'base.html' %} {% block content %}
+<div class="w-full">
+  <!-- Top header -->
+  <div class="flex items-center justify-between px-4 pb-4">
+    <div>
+      <h2 class="text-xl font-semibold text-gray-700">Settings</h2>
+      <p class="text-sm text-slate-600 mt-2">Manage your account and preferencess</p>
+    </div>
+  </div>
+
+  <div class="w-full grid grid-cols-1 md:grid-cols-12 gap-7 p-4">
+    <!-- card -->
+    <div class="col-span-3 bg-white border border-gray-200 rounded-md p-4 h-fit">
+      <ul class="space-y-1.5">
+        <li class="p-2 text-gray-800 bg-white hover:bg-green-100/50 focus:bg-green-100/50 group">
+          <a href="{{url_for('main.setting')}}" class="flex items-center gap-3 text-sm">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-users-icon lucide-users"
+            >
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <path d="M16 3.128a4 4 0 0 1 0 7.744" />
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+              <circle cx="9" cy="7" r="4" /></svg
+            ><span>Profile</span></a
+          >
+        </li>
+        <li class="p-2 text-gray-800 bg-white hover:bg-green-100/50 focus:bg-green-100/50 group">
+          <a href="{{url_for('main.change_password')}}" class="flex items-center gap-3 text-sm">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-shield-icon lucide-shield"
+            >
+              <path
+                d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+              />
+            </svg>
+            <span>Security</span></a
+          >
+        </li>
+      </ul>
+    </div>
+    <div class="col-span-9 bg-white border border-gray-200 rounded-md py-4 px-8">{% block profile %}{% endblock profile%}</div>
+  </div>
+</div>
+
+{% endblock content%}

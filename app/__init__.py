@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -34,10 +35,15 @@ def create_app(config_class=Config):
             return User.load_user(user_id)
         
         
-      
+    basedir = os.path.abspath(os.path.dirname(__file__))
+        
+    upload_folder = os.path.join(basedir, "static", "avatars")  # NOT "app", "static"
+    os.makedirs(upload_folder, exist_ok=True)  # ensure folder exists
+
+    app.config["UPLOAD_FOLDER"] = upload_folder
+    app.config["MAX_CONTENT_LENGTH"] = 3 * 1024 * 1024 
        
       
-    
     # Register blueprints LAST
     from .routes import main
     app.register_blueprint(main)
@@ -49,6 +55,8 @@ def create_app(config_class=Config):
         session.permanent = True
         session.modified = True
         app.permanent_session_lifetime = app.config['PERMANENT_SESSION_LIFETIME']
+        
+    
     
     return app
 

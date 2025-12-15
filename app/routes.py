@@ -1,13 +1,16 @@
 from datetime import date, timedelta,datetime
 from io import BytesIO
+import os
+import uuid
 import pandas as pd
-from flask import send_file
+from flask import current_app, send_file
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from sqlalchemy import or_, func
 from werkzeug.security import generate_password_hash
+from werkzeug.utils import secure_filename
 from flask_login import login_user, logout_user, login_required, current_user
-from app.forms import RegistrationForm, LoginForm, GroceryItemForm, EditGroceryItemForm, ConsumptionLogForm, EditConsumptionLogForm, ShoppingListItemForm
-from app.models import User, Location, Category, GroceryItem, Units, ConsumptionLog, ShoppingListItem,FoodWasted
+from app.forms import ChangePasswordForm, RegistrationForm, LoginForm, GroceryItemForm, EditGroceryItemForm, ConsumptionLogForm, EditConsumptionLogForm, ShoppingListItemForm, ProfileForm
+from app.models import User, Location, Category, GroceryItem, Units, ConsumptionLog, ShoppingListItem,FoodWasted, Profile
 from app import db
 
 main = Blueprint('main', __name__)
@@ -604,3 +607,63 @@ def analytics():
         total_per_month=total_per_month,
         wasted_per_month=wasted_per_month,category_labels=labels,
         category_data=data,)
+    
+
+
+# Settings routes
+
+@main.route('/setting', methods=["GET", "POST"])
+@login_required
+def setting():
+     # ensure profile exists
+    if not current_user.profile:
+        current_user.profile = Profile()
+        db.session.add(current_user.profile)
+        db.session.commit()
+
+    form = ProfileForm(obj=current_user.profile)
+
+    if form.validate_on_submit():
+        form.populate_obj(current_user.profile)
+
+        # handle avatar upload if a file was selected
+        file = form.avatar.data
+        if file:
+            filename = secure_filename(file.filename)
+            ext = filename.rsplit(".", 1)[-1].lower()
+            new_name = f"{uuid.uuid4().hex}.{ext}"
+            upload_path = os.path.join(current_app.config["UPLOAD_FOLDER"], new_name)
+            file.save(upload_path)
+
+            # store path relative to /static so url_for('static', ...) works
+            current_user.profile.avatar_url = f"avatars/{new_name}"
+
+        db.session.commit()
+        flash("Profile updated.", "success")
+        return redirect(url_for("main.setting"))
+
+    return render_template("user_profile.html", form=form)
+    
+
+# change password route
+
+@main.route("/change-password", methods=["GET", "POST"])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+
+    if form.validate_on_submit():
+        # verify current password
+        if not current_user.check_password(form.current_password.data):
+            flash("Current password is incorrect.", "danger")
+            return redirect(url_for("main.change_password"))
+
+        # set new password
+        current_user.set_password(form.new_password.data)
+        db.session.commit()
+
+        flash("Your password has been updated.", "success")
+        return redirect(url_for("main.change_password"))  # or wherever you like
+
+    return render_template("change_password.html", form=form)
+

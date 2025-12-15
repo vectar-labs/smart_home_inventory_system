@@ -1,7 +1,7 @@
 import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, FloatField, DateField, SelectField, ValidationError,BooleanField
-from wtforms.validators import DataRequired, Email, Length, EqualTo, NumberRange
+from wtforms.validators import DataRequired, Email, Length, EqualTo, NumberRange, Optional
 from flask_wtf.file import FileField, FileAllowed
 from app.models import User, Category, Location, Units, GroceryItem
 
@@ -98,3 +98,35 @@ class ShoppingListItemForm(FlaskForm):
     purchased = BooleanField('Purchased?')
     unit_id = SelectField('Unit', coerce=int)
     submit = SubmitField('Add to Shopping List')
+
+
+class ProfileForm(FlaskForm):
+    full_name = StringField("Full Name", validators=[DataRequired(), Length(max=120)])
+    phone_number = StringField("Phone Number", validators=[Optional(), Length(max=30)])
+    role = StringField("Role", validators=[Optional(), Length(max=50)])
+
+    avatar = FileField(
+        "Profile Photo",
+        validators=[FileAllowed(["jpg", "jpeg", "png", "gif"], "Images only!")]
+    )
+
+    submit = SubmitField("Save Changes")
+
+
+class ChangePasswordForm(FlaskForm):
+    current_password = PasswordField(
+        "Current Password",
+        validators=[DataRequired()]
+    )
+    new_password = PasswordField(
+        "New Password",
+        validators=[DataRequired(), Length(min=8)]
+    )
+    confirm_new_password = PasswordField(
+        "Confirm New Password",
+        validators=[
+            DataRequired(),
+            EqualTo("new_password", message="Passwords must match.")
+        ]
+    )
+    submit = SubmitField("Update Password")
