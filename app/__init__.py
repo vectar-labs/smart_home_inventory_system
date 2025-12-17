@@ -26,6 +26,8 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     
     with app.app_context():
+        from flask_migrate import upgrade        # ← add
+        upgrade() 
         db.create_all()
         from app.models import User
         
