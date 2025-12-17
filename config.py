@@ -10,7 +10,7 @@ class Config:
     SQLALCHEMY_DATABASE_URI = (
         os.environ.get("DATABASE_URL") or
         "postgresql://postgres:kitindi@localhost/grocery_db"
-    )
+    ).replace('postgres://', 'postgresql://', 1) # for compatibility
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
 #    postgresql://food_inventory_71zh_user:eT0cKqgTLybgwU2ELxp4Uxa62C8Bnb6j@dpg-d501aomuk2gs739nfgj0-a.oregon-postgres.render.com/food_inventory_71zh
