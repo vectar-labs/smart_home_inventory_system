@@ -9,7 +9,7 @@ from sqlalchemy import or_, func
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 from flask_login import login_user, logout_user, login_required, current_user
-from app.forms import ChangePasswordForm, RegistrationForm, LoginForm, GroceryItemForm, EditGroceryItemForm, ConsumptionLogForm, EditConsumptionLogForm, ShoppingListItemForm, ProfileForm
+from app.forms import ChangePasswordForm, RegistrationForm, LoginForm, GroceryItemForm, EditGroceryItemForm, ConsumptionLogForm, EditConsumptionLogForm, ShoppingListItemForm, ProfileForm, CategoryForm, LocationForm, UnitsForm
 from app.models import User, Location, Category, GroceryItem, Units, ConsumptionLog, ShoppingListItem,FoodWasted, Profile
 from app import db
 
@@ -381,6 +381,22 @@ def edit_consumption(log_id):
         
     return render_template('edit_consumption.html', user=current_user, form=form, log=log)
 
+@main.route('/delete_consumption/<int:log_id>', methods=['POST'])
+@login_required
+def delete_consumption(log_id):
+    log = ConsumptionLog.query.filter_by(id=log_id, user_id=current_user.id).first_or_404()
+    
+    # Restore grocery item quantity
+    grocery_item = GroceryItem.query.filter_by(id=log.grocery_item_id, user_id=current_user.id).first()
+    if grocery_item:
+        grocery_item.quantity += log.qty_used
+    
+    db.session.delete(log)
+    db.session.commit()
+    
+    flash('Consumption log deleted successfully', 'success')
+    return redirect(url_for('main.consumption'))
+
 
 # download consumption log as csv
 @main.route('/consumption/download', methods=['GET'])
@@ -666,4 +682,117 @@ def change_password():
         return redirect(url_for("main.change_password"))  # or wherever you like
 
     return render_template("change_password.html", form=form)
+
+
+# Inventory Options Routes
+
+@main.route('/inventory_options')
+@login_required
+def inventory_options():
+    
+    category_form = CategoryForm()
+    location_form = LocationForm()
+    units_form = UnitsForm()
+    
+    categories = Category.query.filter_by(user_id=current_user.id).order_by(Category.name).all()
+    locations = Location.query.filter_by(user_id=current_user.id).order_by(Location.name).all()
+    units = Units.query.filter_by(user_id=current_user.id).order_by(Units.name).all()
+    return render_template('inventory_options.html', user=current_user, categories=categories, locations=locations, units=units, category_form=category_form, location_form=location_form, units_form=units_form)
+
+
+# add unit route
+@main.route('/add_unit', methods=['POST'])
+@login_required
+def add_unit():
+    form = UnitsForm()
+    if form.validate_on_submit():
+        unit = Units(
+            name=form.name.data,
+            user_id=current_user.id
+        )
+        db.session.add(unit)
+        db.session.commit()
+        flash('Unit added successfully', 'success')
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f"Error in {getattr(form, field).label.text}: {error}", 'error')
+    return redirect(url_for('main.inventory_options'))
+
+
+# delete unit route
+@main.route('/delete_unit/<int:unit_id>', methods=['POST'])
+@login_required
+def delete_unit(unit_id):
+    unit = Units.query.filter_by(id=unit_id, user_id=current_user.id).first_or_404()
+    db.session.delete(unit)
+    db.session.commit()
+    flash('Unit deleted successfully', 'success')
+    return redirect(url_for('main.inventory_options'))
+
+
+# add location route
+@main.route('/add_location', methods=['POST'])
+@login_required
+def add_location():
+    form = LocationForm()
+    if form.validate_on_submit():
+        location = Location(
+            name=form.name.data,
+            user_id=current_user.id
+        )
+        db.session.add(location)
+        db.session.commit()
+        flash('Location added successfully', 'success')
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f"Error in {getattr(form, field).label.text}: {error}", 'error')
+    return redirect(url_for('main.inventory_options'))
+
+# delete location route
+@main.route('/delete_location/<int:location_id>', methods=['POST'])
+@login_required
+def delete_location(location_id):
+    location = Location.query.filter_by(id=location_id, user_id=current_user.id).first_or_404()
+    db.session.delete(location)
+    db.session.commit()
+    flash('Location deleted successfully', 'success')
+    
+    return redirect(url_for('main.inventory_options'))
+
+
+# add category route
+@main.route('/add_category', methods=['POST'])
+@login_required
+def add_category():
+    form = CategoryForm()
+    if form.validate_on_submit():
+        category = Category(
+            name=form.name.data,
+            user_id=current_user.id
+        )
+        db.session.add(category)
+        db.session.commit()
+        flash('Category added successfully', 'success')
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f"Error in {getattr(form, field).label.text}: {error}", 'error')
+    return redirect(url_for('main.inventory_options'))
+
+# delete category route
+@main.route('/delete_category/<int:category_id>', methods=['POST'])
+@login_required
+def delete_category(category_id):
+    category = Category.query.filter_by(id=category_id, user_id=current_user.id).first_or_404()
+    db.session.delete(category)
+    db.session.commit()
+    flash('Category deleted successfully', 'success')
+    return redirect(url_for('main.inventory_options'))
+    if item and field.data > item.quantity:
+            raise ValidationError('Quantity used cannot exceed available quantity.')
+            return redirect(url_for('main.inventory_options'))
+            return redirect(url_for('main.inventory_options'))
+    return redirect(url_for('main.inventory_options'))
 

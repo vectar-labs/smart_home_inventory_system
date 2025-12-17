@@ -4,7 +4,6 @@ from datetime import datetime
 from flask_login import UserMixin
 
 class User(db.Model, UserMixin):
-    
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120), nullable=False, unique=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -19,6 +18,26 @@ class User(db.Model, UserMixin):
         cascade="all, delete-orphan"
     )
     
+    categories = db.relationship(
+        "Category",
+        back_populates="user",
+        lazy="dynamic",   # optional
+        cascade="all, delete-orphan",  # optional
+    )
+
+    locations = db.relationship(
+        "Location",
+        back_populates="user",
+        lazy="dynamic",
+        cascade="all, delete-orphan",
+    )
+
+    units = db.relationship(
+        "Units",          # or "Unit" if that is your class name
+        back_populates="user",
+        lazy="dynamic",
+        cascade="all, delete-orphan",
+    )
     
     @staticmethod
     def load_user(user_id):
@@ -40,14 +59,23 @@ class User(db.Model, UserMixin):
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
+    user = db.relationship("User", back_populates="categories")
+    
 
 class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
+    user = db.relationship("User", back_populates="locations")
+ 
 
 class Units(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
+    user = db.relationship("User", back_populates="units")
+ 
 
 class GroceryItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -114,3 +142,5 @@ class Profile(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), unique=True, nullable=False)
 
     user = db.relationship("User", back_populates="profile")
+    
+

@@ -130,3 +130,16 @@ class ChangePasswordForm(FlaskForm):
         ]
     )
     submit = SubmitField("Update Password")
+    
+
+
+class CategoryForm(FlaskForm):
+    name = StringField('Category Name', validators=[DataRequired(), Length(max=50)])
+    submit = SubmitField('Save Category')
+
+class LocationForm(FlaskForm):
+    name = StringField('Location Name', validators=[DataRequired(), Length(max=50)])
+    submit = SubmitField('Save Location')
+class UnitsForm(FlaskForm):
+    name = StringField('Unit Name', validators=[DataRequired(), Length(max=20)])
+    submit = SubmitField('Save Unit')

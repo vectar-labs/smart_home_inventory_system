@@ -256,7 +256,9 @@
                   <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">{{ log.qty_used }}</td>
                   <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">{{ log.user.username if log.user else 'Unknown user' }}</td>
                   <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-                    <a href="#" class="text-red-600 hover:text-red-800">Remove</a>
+                    <form action="{{ url_for('main.delete_consumption', log_id=log.id) }}" method="POST">
+                      <button type="submit" class="text-red-600 hover:text-red-800 cursor-pointer">Remove</button>
+                    </form>
                   </td>
                 </tr>
                 {% else %}

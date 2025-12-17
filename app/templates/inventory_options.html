@@ -1,0 +1,254 @@
+{% extends 'setting_base.html' %} {% block profile %}
+<div class="">
+  <h1 class="text-sm text-slate-700">Inventory Options</h1>
+  <p class="text-sm text-slate-600 mt-2">Customize the categories, units, and storage locations available when adding or editing inventory items.</p>
+
+  <!-- Categories Form -->
+  <div class="pt-8">
+    <h3 class="text-sm text-slate-700">Categories</h3>
+    <div class="p-3 border border-dashed border-gray-300 rounded-md flex items-center justify-center mt-4">
+      <form method="POST" action="{{ url_for('main.add_category') }}" class="w-full">
+        {{ category_form.hidden_tag() }}
+        <div class="flex items-center gap-2 flex items-center">
+          {{ category_form.name(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none text-xs", placeholder="Enter new category name") }}
+          <button
+            type="submit"
+            class="bg-green-500 text-white px-4 py-2.5 rounded-md focus:outline-none flex items-center gap-1 hover:bg-green-600 cursor-pointer text-sm"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-plus-icon lucide-plus"
+            >
+              <path d="M5 12h14" />
+              <path d="M12 5v14" />
+            </svg>
+            Add
+          </button>
+        </div>
+      </form>
+    </div>
+    <!-- Categories List -->
+    <div class="grid grid-cols-2 gap-4 mt-4">
+      {% for category in categories %}
+      <div class="mt-4 flex items-center justify-between bg-gray-50 px-4 py-2 rounded-md border border-gray-200">
+        <span class="text-sm text-slate-700 flex items-center gap-2"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-tags-icon lucide-tags"
+          >
+            <path
+              d="M13.172 2a2 2 0 0 1 1.414.586l6.71 6.71a2.4 2.4 0 0 1 0 3.408l-4.592 4.592a2.4 2.4 0 0 1-3.408 0l-6.71-6.71A2 2 0 0 1 6 9.172V3a1 1 0 0 1 1-1z"
+            />
+            <path d="M2 7v6.172a2 2 0 0 0 .586 1.414l6.71 6.71a2.4 2.4 0 0 0 3.191.193" />
+            <circle cx="10.5" cy="6.5" r=".5" fill="currentColor" /></svg
+          >{{ category.name }}</span
+        >
+        <form method="POST" action="{{ url_for('main.delete_category', category_id=category.id) }}">
+          <button type="submit" class="text-red-500 hover:text-red-700 focus:outline-none" title="Delete Category">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-trash-icon lucide-trash"
+            >
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              <line x1="10" y1="11" x2="10" y2="17" />
+              <line x1="14" y1="11" x2="14" y2="17" />
+            </svg>
+          </button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Units Form -->
+  <div class="pt-8">
+    <h3 class="text-sm text-slate-700">Units</h3>
+    <div class="p-3 border border-dashed border-gray-300 rounded-md flex items-center justify-center mt-4">
+      <form method="POST" action="{{ url_for('main.add_unit') }}" class="w-full">
+        {{ units_form.hidden_tag() }}
+        <div class="flex items-center gap-2 flex items-center">
+          {{ units_form.name(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none text-xs", placeholder="Enter new unit e.g kg, liters")
+          }}
+          <button
+            type="submit"
+            class="bg-green-500 text-white px-4 py-2.5 rounded-md focus:outline-none flex items-center gap-1 hover:bg-green-600 cursor-pointer text-sm"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-plus-icon lucide-plus"
+            >
+              <path d="M5 12h14" />
+              <path d="M12 5v14" />
+            </svg>
+            Add
+          </button>
+        </div>
+      </form>
+    </div>
+    <!-- Unit List -->
+    <div class="grid grid-cols-2 gap-4 mt-4">
+      {% for unit in units %}
+      <div class="mt-4 flex items-center justify-between bg-gray-50 px-4 py-2 rounded-md border border-gray-200">
+        <span class="text-sm text-slate-700 flex items-center gap-2"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-tags-icon lucide-tags"
+          >
+            <path
+              d="M13.172 2a2 2 0 0 1 1.414.586l6.71 6.71a2.4 2.4 0 0 1 0 3.408l-4.592 4.592a2.4 2.4 0 0 1-3.408 0l-6.71-6.71A2 2 0 0 1 6 9.172V3a1 1 0 0 1 1-1z"
+            />
+            <path d="M2 7v6.172a2 2 0 0 0 .586 1.414l6.71 6.71a2.4 2.4 0 0 0 3.191.193" />
+            <circle cx="10.5" cy="6.5" r=".5" fill="currentColor" /></svg
+          >{{ unit.name }}</span
+        >
+        <form method="POST" action="{{ url_for('main.delete_unit', unit_id=unit.id) }}">
+          <button type="submit" class="text-red-500 hover:text-red-700 focus:outline-none" title="Delete Unit">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-trash-icon lucide-trash"
+            >
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              <line x1="10" y1="11" x2="10" y2="17" />
+              <line x1="14" y1="11" x2="14" y2="17" />
+            </svg>
+          </button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Storage Locations  Form -->
+  <div class="pt-8">
+    <h3 class="text-sm text-slate-700">Storage Locations</h3>
+    <div class="p-3 border border-dashed border-gray-300 rounded-md flex items-center justify-center mt-4">
+      <form method="POST" action="{{ url_for('main.add_location') }}" class="w-full">
+        {{ location_form.hidden_tag() }}
+        <div class="flex items-center gap-2 flex items-center">
+          {{ location_form.name(class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none text-xs", placeholder="Enter new storage location")
+          }}
+          <button
+            type="submit"
+            class="bg-green-500 text-white px-4 py-2.5 rounded-md focus:outline-none flex items-center gap-1 hover:bg-green-600 cursor-pointer text-sm"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-plus-icon lucide-plus"
+            >
+              <path d="M5 12h14" />
+              <path d="M12 5v14" />
+            </svg>
+            Add
+          </button>
+        </div>
+      </form>
+    </div>
+    <!-- Locations List -->
+    <div class="grid grid-cols-2 gap-4 mt-4">
+      {% for location in locations %}
+      <div class="mt-4 flex items-center justify-between bg-gray-50 px-4 py-2 rounded-md border border-gray-200">
+        <span class="text-sm text-slate-700 flex items-center gap-2"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-tags-icon lucide-tags"
+          >
+            <path
+              d="M13.172 2a2 2 0 0 1 1.414.586l6.71 6.71a2.4 2.4 0 0 1 0 3.408l-4.592 4.592a2.4 2.4 0 0 1-3.408 0l-6.71-6.71A2 2 0 0 1 6 9.172V3a1 1 0 0 1 1-1z"
+            />
+            <path d="M2 7v6.172a2 2 0 0 0 .586 1.414l6.71 6.71a2.4 2.4 0 0 0 3.191.193" />
+            <circle cx="10.5" cy="6.5" r=".5" fill="currentColor" /></svg
+          >{{ location.name }}</span
+        >
+        <form method="POST" action="{{ url_for('main.delete_location', location_id=location.id) }}">
+          <button type="submit" class="text-red-500 hover:text-red-700 focus:outline-none" title="Delete Location">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-trash-icon lucide-trash"
+            >
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              <line x1="10" y1="11" x2="10" y2="17" />
+              <line x1="14" y1="11" x2="14" y2="17" />
+            </svg>
+          </button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+    {% endblock profile %}
+  </div>
+</div>
