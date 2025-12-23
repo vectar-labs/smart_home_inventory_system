@@ -1,0 +1,151 @@
+{% extends 'super_user_base.html' %} {% block admin_dashoard %}
+
+<div class="bg-white border border-gray-200 rounded-md py-4 px-8">
+  <div class="flex items-center justify-between">
+    <h1 class="text-sm text-gray-600">System Overview</h1>
+    <span class="text-xs text-green-700 bg-green-200 px-6 py-1.5 rounded-full flex items-center gap-3">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="17"
+        height="17"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-circle-check-big-icon lucide-circle-check-big"
+      >
+        <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+        <path d="m9 11 3 3L22 4" /></svg
+      >Healthy</span
+    >
+  </div>
+  <div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+      <!-- card 1 -->
+      <div class="col-span-1 bg-blue-50 border border-blue-300 rounded-md p-4">
+        <div class="flex items-center justify-between w-full mb-4">
+          <span
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-users-icon lucide-users text-blue-400"
+            >
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <path d="M16 3.128a4 4 0 0 1 0 7.744" />
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+              <circle cx="9" cy="7" r="4" /></svg></span
+          ><span class="text-sm text-blue-400">+{{ users_percentage }}%</span>
+        </div>
+        <h3 class="text-xs text-gray-600 mb-2">Total users</h3>
+        <h3 class="text-sm text-gray-700">{{ total_users }}</h3>
+      </div>
+      <!-- card 2 -->
+      <div class="col-span-1 bg-green-50 border border-green-300 rounded-md p-4">
+        <div class="flex items-center justify-between w-full mb-4">
+          <span
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-box-icon lucide-box text-green-400"
+            >
+              <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+              <path d="m3.3 7 8.7 5 8.7-5" />
+              <path d="M12 22V12" /></svg></span
+          ><span class="text-sm text-green-400">+{{ grocery_percentage }}%</span>
+        </div>
+        <h3 class="text-xs text-gray-600 mb-2">Total Items</h3>
+        <h3 class="text-sm text-gray-700">{{ total_items }}</h3>
+      </div>
+      <!-- card 3 -->
+      <div class="col-span-1 bg-rose-50 border border-rose-300 rounded-md p-4">
+        <div class="flex items-center justify-between w-full mb-4">
+          <span
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-shopping-cart-icon lucide-shopping-cart text-rose-400"
+            >
+              <circle cx="8" cy="21" r="1" />
+              <circle cx="19" cy="21" r="1" />
+              <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" /></svg
+          ></span>
+        </div>
+        <h3 class="text-xs text-gray-600 mb-2">Consumption Logs</h3>
+        <h3 class="text-sm text-gray-700">{{ total_consummed_quantity }}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="w-full mt-6">
+  <h3 class="text-sm text-gray-600 px-4">System Analytics</h3>
+  <div class="w-full grid grid-cols-2 gap-7 mt-5">
+    <div class="col-span-1 bg-white border border-gray-200 rounded-md p-4 h-fit">
+      <h3 class="text-sm text-gray-600 mb-5">User Growth (Last 30 Days)</h3>
+      <div class="h-90"><canvas id="userChart" height="200"></canvas></div>
+    </div>
+    <div class="col-span-1 bg-white border border-gray-200 rounded-md p-4 h-fit">
+      <h3 class="card-label fw-bold text-gray-900">Items by Category</h3>
+      <span class="text-gray-500 mt-1 fw-semibold fs-6"> +15% increase from previous month </span>
+      <div class="h-90">
+        <canvas id="catChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // 1. User-growth line
+  new Chart(document.getElementById('userChart'), {
+    type: 'line',
+    data: {
+      labels: {{ user_labels | tojson }},
+      datasets: [{
+        label: 'New users',
+        data: {{ user_data | tojson }},
+        borderColor: '#009EF7',
+        backgroundColor: 'rgba(0, 158, 247, .15)',
+        tension: 0.3,
+        fill: true
+      }]
+    },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  // 2. Category doughnut
+  new Chart(document.getElementById('catChart'), {
+    type: 'doughnut',
+    data: {
+      labels: {{ cat_labels | tojson }},
+      datasets: [{
+        data: {{ cat_values | tojson }},
+        backgroundColor: ['#F1416C','#50CD89','#FFC700','#7239EA','#43CED7']
+      }]
+    },
+    options: { cutout: '70%', plugins: { legend: { position: 'bottom' } } }
+  });
+</script>
+{% endblock admin_dashoard %}

@@ -18,7 +18,7 @@ def create_app(config_class=Config):
     # Initialize extensions
     db.init_app(app)
     login_manager.init_app(app)
-    login_manager.login_view = 'main.login'
+    login_manager.login_view = 'main.login' # specify the login view for regular users
     login_manager.refresh_view = 'main.login'
     login_manager.needs_refresh_message = "Session timed out, please log in again"
     login_manager.needs_refresh_message_category = "info"
@@ -27,14 +27,16 @@ def create_app(config_class=Config):
     
     with app.app_context():
         db.create_all()
-        from app.models import User
+        from app.models import User, SuperUser
         
         # Register user_loader after User import
         @login_manager.user_loader
         def load_user(user_id):
-            return User.load_user(user_id)
-        
-        
+            current_user = User.query.get(user_id)
+            if current_user:
+                return current_user
+            return SuperUser.query.get(user_id)
+
     basedir = os.path.abspath(os.path.dirname(__file__))
         
     upload_folder = os.path.join(basedir, "static", "avatars")  # NOT "app", "static"

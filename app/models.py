@@ -3,6 +3,30 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flask_login import UserMixin
 
+
+
+class SuperUser(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(120), nullable=False, unique=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_superuser = db.Column(db.Boolean, default=True)
+    
+    # for Flask-Login
+    @staticmethod
+    def load_user(user_id):
+        return SuperUser.query.get(int(user_id))
+    
+    def set_password(self, password):
+        # Hash and store password securely
+        self.password_hash = generate_password_hash(password)
+    
+    def check_password(self, password):
+        """Verify plaintext password against stored hash"""
+        return check_password_hash(self.password_hash, password)
+
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120), nullable=False, unique=True)
@@ -11,6 +35,7 @@ class User(db.Model, UserMixin):
     role = db.Column(db.String(50), default="Member")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     grocery_items = db.relationship('GroceryItem', backref='owner', lazy=True)
+    # last_seen = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     profile = db.relationship(
         "Profile",
         back_populates="user",

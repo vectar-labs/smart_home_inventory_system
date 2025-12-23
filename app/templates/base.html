@@ -201,7 +201,8 @@
           <div class="border-t-2 border-gray-200 pt-4 px-6 w-full">
             <a href="{{url_for('main.setting')}}" class="flex items-center gap-2">
               <div class="">
-                {% if current_user.profile.avatar_url %}
+                {% if current_user.is_authenticated and current_user.__class__.__name__ != 'SuperUser' and current_user.profile and
+                current_user.profile.avatar_url %}
                 <img src="{{ url_for('static', filename=current_user.profile.avatar_url) }}" class="w-13 h-13 rounded-full object-cover" alt="Profile photo" />
                 {% else %}
                 <div class="w-13 h-13 rounded-full bg-green-100 flex items-center justify-center text-gray-600">

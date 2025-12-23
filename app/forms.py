@@ -6,6 +6,21 @@ from flask_wtf.file import FileField, FileAllowed
 from app.models import User, Category, Location, Units, GroceryItem
 
 
+# Super User Login Form
+class SuperUserLoginForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(max=120)])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Log In')
+
+# Super User Registration Form
+class SuperUserRegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=3, max=120)])
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(max=120)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
+    submit = SubmitField('Sign Up')
+    
+
+
 # User Registration Form
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=3, max=120)])

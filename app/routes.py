@@ -5,15 +5,136 @@ import uuid
 import pandas as pd
 from flask import current_app, send_file
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from sqlalchemy import or_, func
+from sqlalchemy import extract, or_, func
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 from flask_login import login_user, logout_user, login_required, current_user
-from app.forms import ChangePasswordForm, RegistrationForm, LoginForm, GroceryItemForm, EditGroceryItemForm, ConsumptionLogForm, EditConsumptionLogForm, ShoppingListItemForm, ProfileForm, CategoryForm, LocationForm, UnitsForm
-from app.models import User, Location, Category, GroceryItem, Units, ConsumptionLog, ShoppingListItem,FoodWasted, Profile
+from app.forms import ChangePasswordForm, RegistrationForm, LoginForm, GroceryItemForm, EditGroceryItemForm, ConsumptionLogForm, EditConsumptionLogForm, ShoppingListItemForm, ProfileForm, CategoryForm, LocationForm, SuperUserLoginForm, UnitsForm, SubmitField, SuperUserRegistrationForm
+from app.models import SuperUser, User, Location, Category, GroceryItem, Units, ConsumptionLog, ShoppingListItem,FoodWasted, Profile
 from app import db
 
 main = Blueprint('main', __name__)
+
+
+
+# Super User routes authentication
+
+@main.route('/super-login', methods =['GET', 'POST'])
+def super_login():
+    
+    form = SuperUserLoginForm()
+    
+    if form.validate_on_submit():
+            super_user = SuperUser.query.filter_by(email=form.email.data).first()
+            if super_user and super_user.check_password(form.password.data):
+                login_user(super_user, remember=False)
+                return redirect(url_for('main.super_user_dashboard'))
+            else:
+                flash('Invalid email or password', 'error') 
+    
+    
+    return render_template('super_user_login.html', form=form)
+
+
+@main.route('/super-signup', methods =['GET', 'POST'])
+def super_signup():
+    form = SuperUserRegistrationForm()
+    
+    if form.validate_on_submit():
+        super_user = SuperUser(username=form.username.data, email=form.email.data)
+        super_user.set_password(form.password.data)  # Hashes before saving
+        db.session.add(super_user)
+        db.session.commit()
+        flash('Super User Account created successfully!', 'success')
+        return redirect(url_for('main.super_login'))
+    
+    return render_template('super_user_register.html', form=form)   
+
+@main.route('/super-logout')
+@login_required
+def super_logout():
+    logout_user()
+    flash('Logged out successfully, see you soon', 'success')
+    return redirect(url_for('main.super_login'))
+
+@main.route('/super-dashboard', methods =['GET', 'POST'])
+@login_required
+def super_user_dashboard():
+    
+    total_users = User.query.count()
+    target_users_count = 1000
+    users_percentage = (total_users / target_users_count) * 100
+    total_grocery_items = (
+    db.session.query(func.sum(GroceryItem.quantity))  # add up the quantities
+    .scalar()                                        # return a single number
+) or 0 
+    target_grocery_items = 5000
+    grocery_percentage = (total_grocery_items / target_grocery_items) * 100
+    
+    total_consumed_quantity = (
+    db.session.query(func.sum(ConsumptionLog.qty_used))  # add up the values
+    .scalar()                                            # single number
+) or 0 
+
+#  creating data for the graphs
+
+     # 1. USER GROWTH (last 30 days)
+    today = datetime.utcnow().date()
+    start = today - timedelta(days=29)
+    daily = (
+        db.session.query(
+            func.date(User.created_at).label('day'),
+            func.count(User.id).label('c')
+        )
+        .filter(User.created_at >= start)
+        .group_by('day')
+        .order_by('day')
+        .all()
+    )
+    # fill missing days with 0
+    labels = [(start + timedelta(d)).strftime('%b %d') for d in range(30)]
+    counts = {str(d): c for d, c in daily}
+    user_growth_data = [counts.get(str(start + timedelta(d)), 0) for d in range(30)]
+
+    # 2. ITEMS BY CATEGORY
+    cat_data = (
+        db.session.query(
+            Category.name,
+            func.coalesce(func.sum(GroceryItem.quantity), 0)
+        )
+        .outerjoin(GroceryItem, Category.id == GroceryItem.category_id)
+        .group_by(Category.id, Category.name)
+        .order_by(func.sum(GroceryItem.quantity).desc())
+        .all()
+    )
+    cat_labels = [row[0] for row in cat_data]
+    cat_values = [float(row[1]) for row in cat_data]
+    
+    # User management list data
+    
+   
+    
+    
+    return render_template('super_user_dashboard.html', total_users=total_users, total_items=total_grocery_items, users_percentage=users_percentage, grocery_percentage=grocery_percentage, total_consummed_quantity=total_consumed_quantity, user_labels=labels,
+        user_data=user_growth_data,
+        cat_labels=cat_labels,
+        cat_values=cat_values)
+
+
+@main.route('/super-user-management', methods =['GET', 'POST'])
+@login_required
+def user_management():
+    
+    users = (
+    db.session.query(
+        User,
+        func.coalesce(func.sum(GroceryItem.quantity), 0).label('total_qty')
+    )
+    .outerjoin(GroceryItem)
+    .group_by(User.id)
+    .all()
+     )
+    return render_template('super_user_management.html', users=users)
 
 
 
@@ -64,6 +185,10 @@ def logout():
 @main.route('/dashboard')
 @login_required
 def dashboard():
+    
+    if hasattr(current_user, 'is_superuser') and current_user.is_superuser:
+        return render_template('super_dashboard.html')
+    
     today = date.today()
     limit = today + timedelta(days=3)
     
