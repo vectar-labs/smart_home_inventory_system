@@ -36,19 +36,19 @@ def super_login():
     return render_template('super_user_login.html', form=form)
 
 
-@main.route('/super-signup', methods =['GET', 'POST'])
-def super_signup():
-    form = SuperUserRegistrationForm()
+# @main.route('/super-signup', methods =['GET', 'POST'])
+# def super_signup():
+#     form = SuperUserRegistrationForm()
     
-    if form.validate_on_submit():
-        super_user = SuperUser(username=form.username.data, email=form.email.data)
-        super_user.set_password(form.password.data)  # Hashes before saving
-        db.session.add(super_user)
-        db.session.commit()
-        flash('Super User Account created successfully!', 'success')
-        return redirect(url_for('main.super_login'))
+#     if form.validate_on_submit():
+#         super_user = SuperUser(username=form.username.data, email=form.email.data)
+#         super_user.set_password(form.password.data)  # Hashes before saving
+#         db.session.add(super_user)
+#         db.session.commit()
+#         flash('Super User Account created successfully!', 'success')
+#         return redirect(url_for('main.super_login'))
     
-    return render_template('super_user_register.html', form=form)   
+#     return render_template('super_user_register.html', form=form)   
 
 @main.route('/super-logout')
 @login_required
