@@ -5,4 +5,4 @@ app = create_app()
 #     db.create_all()
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5500)  # Remove debug=True for production
+    app.run(debug=True)  # Remove debug=True for production
